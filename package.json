@@ -7,7 +7,7 @@
     "start:prod-v1": "node server.js",
     "start:prod-v2": "node app.js",
     "start:dev-v1": "nodemon server.js",
-    "start:dev-v2": "nodemon server.js"
+    "start:dev-v2": "nodemon app.js"
   },
   "type": "module",
   "keywords": [],

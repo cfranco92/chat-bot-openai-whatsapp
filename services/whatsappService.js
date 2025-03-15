@@ -11,7 +11,7 @@ class WhatsAppService {
     await sendToWhatsApp(data);
   }
 
-  async markAsRead(messageId) {
+  async markMessageAsRead(messageId) {
     const data = {
       messaging_product: "whatsapp",
       status: "read",
