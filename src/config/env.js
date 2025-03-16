@@ -10,4 +10,5 @@ export default {
   PORT: process.env.PORT || 3000,
   BASE_URL: process.env.BASE_URL,
   BUSINESS_NAME: process.env.BUSINESS_NAME,
+  LANGUAGE: process.env.LANGUAGE || "en",
 };

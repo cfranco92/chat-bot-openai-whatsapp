@@ -1,6 +1,7 @@
 import whatsappService from "./whatsappService.js";
 import config from "../config/env.js";
 import GREETINGS from "../constants/greetings.js";
+import i18next from "../i18n/index.js";
 
 class MessageHandler {
   constructor() {
@@ -11,7 +12,7 @@ class MessageHandler {
     if (message.type === "text") {
       const incomingMessage = message.text.body.toLowerCase().trim();
 
-      console.log("Message received: ", message);
+      console.log("Message received:", message);
 
       if (this.isGreeting(incomingMessage)) {
         await this.sendWelcomeMessage(message.from, message.id, senderInfo);
@@ -44,25 +45,25 @@ class MessageHandler {
   async sendWelcomeMessage(to, messageId, senderInfo) {
     const name = this.getSenderInfo(senderInfo)?.split(" ")?.[0];
     const welcomeMessage =
-      `Hello ${name}! Welcome to ${config.BUSINESS_NAME}.` +
-      "\nHow can I help you today?";
+      i18next.t('welcome.greeting', { name, businessName: config.BUSINESS_NAME }) +
+      "\n" + i18next.t('welcome.help');
     await whatsappService.sendMessage(to, welcomeMessage, messageId);
   }
 
   async sendWelcomeMenu(to) {
-    const menuMessage = "Choose an option";
+    const menuMessage = i18next.t('menu.choose');
     const buttons = [
       {
         type: "reply",
-        reply: { id: "option_1", title: "Schedule" },
+        reply: { id: "option_1", title: i18next.t('menu.schedule') },
       },
       {
         type: "reply",
-        reply: { id: "option_2", title: "Consult" },
+        reply: { id: "option_2", title: i18next.t('menu.consult') },
       },
       {
         type: "reply",
-        reply: { id: "option_3", title: "Location" },
+        reply: { id: "option_3", title: i18next.t('menu.location') },
       },
     ];
 
@@ -74,17 +75,17 @@ class MessageHandler {
     switch (option) {
       case "option_1":
         this.appointmentState[to] = { step: "name" };
-        response = "Please enter your name:";
+        response = i18next.t('appointment.enterName');
         break;
       case "option_2":
-        response = "What would you like to consult about?";
+        response = i18next.t('consult.prompt');
         break;
       case "option_3":
         await this.sendLocation(to);
         return;
       default:
-        response =
-          "Sorry, I didn't understand your selection. Please choose one of the menu options";
+        console.log("Invalid menu option received:", option);
+        response = i18next.t('errors.userMenuOption');
         break;
     }
 
@@ -95,8 +96,8 @@ class MessageHandler {
     const location = {
       latitude: 19.4326,
       longitude: -99.1332,
-      name: "MedPet Veterinary",
-      address: "Historic Center, Mexico City",
+      name: i18next.t('location.name'),
+      address: i18next.t('location.address')
     };
 
     await whatsappService.sendLocation(to, location);
@@ -104,20 +105,9 @@ class MessageHandler {
 
   async sendMedia(to) {
     const mediaUrl = "https://s3.amazonaws.com/gndx.dev/medpet-audio.aac";
-    const caption = "Welcome";
+    const caption = i18next.t('media.welcome');
     const type = "audio";
 
-    // const mediaUrl = 'https://s3.amazonaws.com/gndx.dev/medpet-imagen.png';
-    // const caption = 'This is an Image!';
-    // const type = 'image';
-
-    // const mediaUrl = 'https://s3.amazonaws.com/gndx.dev/medpet-video.mp4';
-    // const caption = 'This is a video!';
-    // const type = 'video';
-
-    // const mediaUrl = "https://s3.amazonaws.com/gndx.dev/medpet-file.pdf";
-    // const caption = "This is a PDF!";
-    // const type = "document";
     await whatsappService.sendMediaMessage({
       to,
       type,
@@ -134,24 +124,27 @@ class MessageHandler {
       case "name":
         state.name = message;
         state.step = "petName";
-        response = "Thank you. Now, what's your pet's name?";
+        response = i18next.t('appointment.petName');
         break;
       case "petName":
         state.petName = message;
         state.step = "petType";
-        response =
-          "Perfect. Now, what type of pet is it? (for example: dog, cat, ferret, etc.)";
+        response = i18next.t('appointment.petType');
         break;
       case "petType":
         state.petType = message;
         state.step = "reason";
-        response =
-          "What's the reason for the appointment? (for example: vaccination, deworming, etc.)";
+        response = i18next.t('appointment.reason');
         break;
       case "reason":
         state.reason = message;
-        response = "Thank you for your preference. Your appointment has been scheduled.";
+        response = i18next.t('appointment.confirmation');
+        delete this.appointmentState[to];
         break;
+      default:
+        console.error("Invalid appointment state:", state.step);
+        delete this.appointmentState[to];
+        throw new Error("Invalid appointment state");
     }
 
     await whatsappService.sendMessage(to, response);

@@ -1,4 +1,5 @@
 import sendToWhatsApp from "./httpRequest/sendToWhatsApp.js";
+import i18next from "../i18n/index.js";
 
 class WhatsAppService {
   async sendMessage(to, body, messageId) {
@@ -65,7 +66,7 @@ class WhatsAppService {
         };
         break;
       default:
-        throw new Error("Tipo de media no soportado");
+        throw new Error("Unsupported media type");
     }
 
     const data = {
