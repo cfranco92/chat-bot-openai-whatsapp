@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -9,4 +9,5 @@ export default {
   API_VERSION: process.env.API_VERSION,
   PORT: process.env.PORT || 3000,
   BASE_URL: process.env.BASE_URL,
+  BUSINESS_NAME: process.env.BUSINESS_NAME,
 };

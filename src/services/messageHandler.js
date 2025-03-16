@@ -1,14 +1,17 @@
 import whatsappService from "./whatsappService.js";
+import config from "../config/env.js";
+import GREETINGS from "../constants/greetings.js";
 
 class MessageHandler {
-  async handleIncomingMessage(message) {
+  async handleIncomingMessage(message, senderInfo) {
     if (message.type === "text") {
       const incomingMessage = message.text.body.toLowerCase().trim();
 
       console.log("Message received: ", message);
 
       if (this.isGreeting(incomingMessage)) {
-        await this.sendWelcomeMessage(message.from, message.id);
+        await this.sendWelcomeMessage(message.from, message.id, senderInfo);
+        await this.sendWelcomeMenu(message.from);
       } else {
         const response = `Echo: ${message.text.body}`;
         await whatsappService.sendMessage(message.from, response, message.id);
@@ -19,15 +22,39 @@ class MessageHandler {
   }
 
   isGreeting(message) {
-    const greetings = ["hola", "hi", "hello", "hey", "greetings", "greet"];
-    return greetings.some((greeting) => message.includes(greeting));
+    return GREETINGS.some((greeting) => message.includes(greeting));
   }
 
-  async sendWelcomeMessage(to, messageId) {
+  getSenderInfo(senderInfo) {
+    return senderInfo?.profile?.name || senderInfo?.wa_id || "";
+  }
+
+  async sendWelcomeMessage(to, messageId, senderInfo) {
+    const name = this.getSenderInfo(senderInfo)?.split(" ")?.[0];
     const welcomeMessage =
-      `Hola! Bienvenido a nuestro servicio de Veterinaria online.` +
-      "¿En qué puedo ayudarte?";
+      `Hola ${name}! Bienvenido a ${config.BUSINESS_NAME}.` +
+      "\n¿En qué puedo ayudarte?";
     await whatsappService.sendMessage(to, welcomeMessage, messageId);
+  }
+
+  async sendWelcomeMenu(to) {
+    const menuMessage = "Elige una opción";
+    const buttons = [
+      {
+        type: "reply",
+        reply: { id: "option_1", title: "Agendar" },
+      },
+      {
+        type: "reply",
+        reply: { id: "option_2", title: "Consultar" },
+      },
+      {
+        type: "reply",
+        reply: { id: "option_3", title: "Ubicación" },
+      },
+    ];
+
+    await whatsappService.sendInteractiveButton(to, menuMessage, buttons);
   }
 }
 
