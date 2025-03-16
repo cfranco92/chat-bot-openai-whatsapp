@@ -5,9 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:prod-v1": "node server.js",
-    "start:prod-v2": "node app.js",
+    "start:prod-v2": "node src/app.js",
     "start:dev-v1": "nodemon server.js",
-    "start:dev-v2": "nodemon app.js"
+    "start:dev-v2": "nodemon src/app.js"
   },
   "type": "module",
   "keywords": [],
