@@ -44,25 +44,25 @@ class MessageHandler {
   async sendWelcomeMessage(to, messageId, senderInfo) {
     const name = this.getSenderInfo(senderInfo)?.split(" ")?.[0];
     const welcomeMessage =
-      `Hola ${name}! Bienvenido a ${config.BUSINESS_NAME}.` +
-      "\n¿En qué puedo ayudarte?";
+      `Hello ${name}! Welcome to ${config.BUSINESS_NAME}.` +
+      "\nHow can I help you today?";
     await whatsappService.sendMessage(to, welcomeMessage, messageId);
   }
 
   async sendWelcomeMenu(to) {
-    const menuMessage = "Elige una opción";
+    const menuMessage = "Choose an option";
     const buttons = [
       {
         type: "reply",
-        reply: { id: "option_1", title: "Agendar" },
+        reply: { id: "option_1", title: "Schedule" },
       },
       {
         type: "reply",
-        reply: { id: "option_2", title: "Consultar" },
+        reply: { id: "option_2", title: "Consult" },
       },
       {
         type: "reply",
-        reply: { id: "option_3", title: "Ubicación" },
+        reply: { id: "option_3", title: "Location" },
       },
     ];
 
@@ -74,17 +74,17 @@ class MessageHandler {
     switch (option) {
       case "option_1":
         this.appointmentState[to] = { step: "name" };
-        response = "Por favor, ingresa tu nombre:";
+        response = "Please enter your name:";
         break;
       case "option_2":
-        response = "Realiza tu consulta";
+        response = "What would you like to consult about?";
         break;
       case "option_3":
         await this.sendLocation(to);
         return;
       default:
         response =
-          "Lo siento, no entendí tu selección. Por favor, elige una de las opciones del menú";
+          "Sorry, I didn't understand your selection. Please choose one of the menu options";
         break;
     }
 
@@ -95,8 +95,8 @@ class MessageHandler {
     const location = {
       latitude: 19.4326,
       longitude: -99.1332,
-      name: "MedPet Veterinaria",
-      address: "Centro Histórico, CDMX",
+      name: "MedPet Veterinary",
+      address: "Historic Center, Mexico City",
     };
 
     await whatsappService.sendLocation(to, location);
@@ -104,19 +104,19 @@ class MessageHandler {
 
   async sendMedia(to) {
     const mediaUrl = "https://s3.amazonaws.com/gndx.dev/medpet-audio.aac";
-    const caption = "Bienvenida";
+    const caption = "Welcome";
     const type = "audio";
 
     // const mediaUrl = 'https://s3.amazonaws.com/gndx.dev/medpet-imagen.png';
-    // const caption = '¡Esto es una Imagen!';
+    // const caption = 'This is an Image!';
     // const type = 'image';
 
     // const mediaUrl = 'https://s3.amazonaws.com/gndx.dev/medpet-video.mp4';
-    // const caption = '¡Esto es una video!';
+    // const caption = 'This is a video!';
     // const type = 'video';
 
     // const mediaUrl = "https://s3.amazonaws.com/gndx.dev/medpet-file.pdf";
-    // const caption = "¡Esto es un PDF!";
+    // const caption = "This is a PDF!";
     // const type = "document";
     await whatsappService.sendMediaMessage({
       to,
@@ -134,23 +134,23 @@ class MessageHandler {
       case "name":
         state.name = message;
         state.step = "petName";
-        response = "Gracias. Ahora, ¿cuál es el nombre de tu mascota?";
+        response = "Thank you. Now, what's your pet's name?";
         break;
       case "petName":
         state.petName = message;
         state.step = "petType";
         response =
-          "Perfecto. Ahora, ¿qué tipo de mascota es? (por ejemplo: perro, gato, huron, etc.)";
+          "Perfect. Now, what type of pet is it? (for example: dog, cat, ferret, etc.)";
         break;
       case "petType":
         state.petType = message;
         state.step = "reason";
         response =
-          "¿Cuál es el motivo de la cita? (por ejemplo: vacunación, desparasitación, etc.)";
+          "What's the reason for the appointment? (for example: vaccination, deworming, etc.)";
         break;
       case "reason":
         state.reason = message;
-        response = "Gracias por tu preferencia. Tu cita ha sido agendada.";
+        response = "Thank you for your preference. Your appointment has been scheduled.";
         break;
     }
 
