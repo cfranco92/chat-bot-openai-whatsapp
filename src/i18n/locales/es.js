@@ -35,13 +35,11 @@ export default {
   consult: {
     prompt: "Realiza tu consulta",
   },
-  greetings: {
-    hi: "hola",
-    hello: "hola",
-    hey: "hola",
-    "good morning": "buenos días",
-    "good afternoon": "buenas tardes",
-    "good evening": "buenas noches",
-    greetings: "saludos",
-  },
+  greetings: [
+    "hola",
+    "buenos días",
+    "buenas tardes",
+    "buenas noches",
+    "saludos",
+  ],
 };

@@ -1,11 +1,14 @@
 import sendToWhatsApp from "./httpRequest/sendToWhatsApp.js";
 
-class WhatsAppService {
+export class WhatsAppService {
+  constructor(sendToWhatsAppFn = sendToWhatsApp) {
+    this.sendToWhatsApp = sendToWhatsAppFn;
+  }
+
   async sendMessage(to, body, messageId) {
     let context;
     if (messageId) {
       context = {
-        ...context,
         message_id: messageId,
       };
     }
@@ -14,10 +17,10 @@ class WhatsAppService {
       messaging_product: "whatsapp",
       to,
       text: { body },
-      context,
+      ...(context && { context }),
     };
 
-    await sendToWhatsApp(data);
+    return this.sendToWhatsApp(data);
   }
 
   async markMessageAsRead(messageId) {
@@ -27,7 +30,7 @@ class WhatsAppService {
       message_id: messageId,
     };
 
-    await sendToWhatsApp(data);
+    return this.sendToWhatsApp(data);
   }
 
   async sendInteractiveButton(to, body, buttons) {
@@ -38,29 +41,37 @@ class WhatsAppService {
       interactive: {
         type: "button",
         body: { text: body },
-        action: { buttons },
+        action: {
+          buttons: buttons.map((button) => ({
+            type: "reply",
+            reply: {
+              id: button.id,
+              title: button.title,
+            },
+          })),
+        },
       },
     };
 
-    await sendToWhatsApp(data);
+    return this.sendToWhatsApp(data);
   }
 
   async sendMediaMessage({ to, type, mediaUrl, caption }) {
     const mediaObject = {};
     switch (type) {
       case "image":
-        mediaObject.image = { link: mediaUrl, caption };
+        mediaObject.image = { link: mediaUrl, ...(caption && { caption }) };
         break;
       case "audio":
         mediaObject.audio = { link: mediaUrl };
         break;
       case "video":
-        mediaObject.video = { link: mediaUrl, caption };
+        mediaObject.video = { link: mediaUrl, ...(caption && { caption }) };
         break;
       case "document":
         mediaObject.document = {
           link: mediaUrl,
-          caption,
+          ...(caption && { caption }),
           filename: "medpet.pdf",
         };
         break;
@@ -75,7 +86,7 @@ class WhatsAppService {
       ...mediaObject,
     };
 
-    await sendToWhatsApp(data);
+    return this.sendToWhatsApp(data);
   }
 
   async sendLocation(to, location) {
@@ -86,7 +97,7 @@ class WhatsAppService {
       location,
     };
 
-    await sendToWhatsApp(data);
+    return this.sendToWhatsApp(data);
   }
 }
 
