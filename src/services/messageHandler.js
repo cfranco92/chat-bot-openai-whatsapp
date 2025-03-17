@@ -41,15 +41,15 @@ export class MessageHandler {
   }
 
   isGreeting(message) {
-    // Obtener saludos del archivo de traducciones
+    // Get greetings from translations file
     const translatedGreetings = i18next.t("greetings", { returnObjects: true });
-    // Convertir los saludos a array si es un objeto
+    // Convert greetings to array if it's an object
     const spanishGreetings = Array.isArray(translatedGreetings) ?
       translatedGreetings :
       Object.keys(translatedGreetings);
-    // Saludos en inglés como respaldo
+    // English greetings as fallback
     const englishGreetings = ["hi", "hello", "hey", "good morning", "good afternoon", "good evening", "greetings"];
-    // Combinar ambos arrays de saludos
+    // Combine both greeting arrays
     const allGreetings = [...spanishGreetings, ...englishGreetings];
     return allGreetings.some((greeting) => message.includes(greeting));
   }

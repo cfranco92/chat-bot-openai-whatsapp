@@ -2,54 +2,42 @@ import { jest } from "@jest/globals";
 import i18next from "i18next";
 import { MessageHandler } from "../../services/messageHandler.js";
 
-// Mock de i18next
-const mockTranslations = {
-  greetings: ["hola", "hello", "hi"],
-  "welcome.greeting": "¡Hola {name}!",
-  "welcome.help": "¿En qué puedo ayudarte?",
-  "menu.choose": "Por favor, elige una opción:",
-  "menu.schedule": "Agendar cita",
-  "menu.consult": "Consultar disponibilidad",
-  "menu.location": "Ver ubicación",
-  "errors.userMenuOption": "Lo siento, no entendí tu selección. Por favor, elige una de las opciones del menú",
-};
-
-// Mock de i18next
+// i18next mock
 jest.spyOn(i18next, "t").mockImplementation((key, options) => {
   if (key === "greetings" && options?.returnObjects) {
-    return mockTranslations[key];
+    return ["hola", "buenos días", "buenas tardes", "buenas noches"];
   }
-  if (key === "welcome.greeting" && options?.name) {
-    return mockTranslations[key].replace("{name}", options.name);
+  if (key === "welcome.greeting") {
+    return `¡Hola ${options.name}!`;
   }
-  return mockTranslations[key] || key;
+  if (key === "welcome.help") {
+    return "¿En qué puedo ayudarte?";
+  }
+  return "translated text";
 });
 
 describe("MessageHandler", () => {
   let messageHandler;
-  let mockWhatsappService;
+  let mockWhatsAppService;
   let mockSendMessage;
   let mockMarkMessageAsRead;
   let mockSendInteractiveButton;
 
   beforeEach(() => {
-    // Limpiar todos los mocks
-    jest.clearAllMocks();
-
-    // Crear mocks para los métodos de WhatsAppService
+    // Create mocks for WhatsAppService methods
     mockSendMessage = jest.fn();
     mockMarkMessageAsRead = jest.fn();
     mockSendInteractiveButton = jest.fn();
 
-    // Crear una instancia mock de WhatsAppService
-    mockWhatsappService = {
+    // Create a mock instance of WhatsAppService
+    mockWhatsAppService = {
       sendMessage: mockSendMessage,
       markMessageAsRead: mockMarkMessageAsRead,
       sendInteractiveButton: mockSendInteractiveButton,
     };
 
-    // Crear instancia de MessageHandler con el mock
-    messageHandler = new MessageHandler(mockWhatsappService);
+    // Create MessageHandler instance with the mock
+    messageHandler = new MessageHandler(mockWhatsAppService);
   });
 
   describe("isGreeting", () => {
