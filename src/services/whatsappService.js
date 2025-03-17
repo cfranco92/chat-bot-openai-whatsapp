@@ -1,5 +1,4 @@
 import sendToWhatsApp from "./httpRequest/sendToWhatsApp.js";
-import i18next from "../i18n/index.js";
 
 class WhatsAppService {
   async sendMessage(to, body, messageId) {
@@ -84,7 +83,7 @@ class WhatsAppService {
       messaging_product: "whatsapp",
       to,
       type: "location",
-      location
+      location,
     };
 
     await sendToWhatsApp(data);

@@ -1,6 +1,5 @@
 import whatsappService from "./whatsappService.js";
 import config from "../config/env.js";
-import GREETINGS from "../constants/greetings.js";
 import i18next from "../i18n/index.js";
 
 class MessageHandler {
@@ -35,7 +34,8 @@ class MessageHandler {
   }
 
   isGreeting(message) {
-    return GREETINGS.some((greeting) => message.includes(greeting));
+    const greetings = i18next.t("greetings", { returnObjects: true });
+    return Object.values(greetings).some((greeting) => message.includes(greeting));
   }
 
   getSenderInfo(senderInfo) {
@@ -44,26 +44,29 @@ class MessageHandler {
 
   async sendWelcomeMessage(to, messageId, senderInfo) {
     const name = this.getSenderInfo(senderInfo)?.split(" ")?.[0];
-    const welcomeMessage =
-      i18next.t('welcome.greeting', { name, businessName: config.BUSINESS_NAME }) +
-      "\n" + i18next.t('welcome.help');
+    const welcomeMessage = `${i18next.t("welcome.greeting", {
+      name,
+      businessName: config.BUSINESS_NAME,
+    })
+    }\n${
+      i18next.t("welcome.help")}`;
     await whatsappService.sendMessage(to, welcomeMessage, messageId);
   }
 
   async sendWelcomeMenu(to) {
-    const menuMessage = i18next.t('menu.choose');
+    const menuMessage = i18next.t("menu.choose");
     const buttons = [
       {
         type: "reply",
-        reply: { id: "option_1", title: i18next.t('menu.schedule') },
+        reply: { id: "option_1", title: i18next.t("menu.schedule") },
       },
       {
         type: "reply",
-        reply: { id: "option_2", title: i18next.t('menu.consult') },
+        reply: { id: "option_2", title: i18next.t("menu.consult") },
       },
       {
         type: "reply",
-        reply: { id: "option_3", title: i18next.t('menu.location') },
+        reply: { id: "option_3", title: i18next.t("menu.location") },
       },
     ];
 
@@ -75,17 +78,17 @@ class MessageHandler {
     switch (option) {
       case "option_1":
         this.appointmentState[to] = { step: "name" };
-        response = i18next.t('appointment.enterName');
+        response = i18next.t("appointment.enterName");
         break;
       case "option_2":
-        response = i18next.t('consult.prompt');
+        response = i18next.t("consult.prompt");
         break;
       case "option_3":
         await this.sendLocation(to);
         return;
       default:
         console.log("Invalid menu option received:", option);
-        response = i18next.t('errors.userMenuOption');
+        response = i18next.t("errors.userMenuOption");
         break;
     }
 
@@ -96,8 +99,8 @@ class MessageHandler {
     const location = {
       latitude: 19.4326,
       longitude: -99.1332,
-      name: i18next.t('location.name'),
-      address: i18next.t('location.address')
+      name: i18next.t("location.name"),
+      address: i18next.t("location.address"),
     };
 
     await whatsappService.sendLocation(to, location);
@@ -105,7 +108,7 @@ class MessageHandler {
 
   async sendMedia(to) {
     const mediaUrl = "https://s3.amazonaws.com/gndx.dev/medpet-audio.aac";
-    const caption = i18next.t('media.welcome');
+    const caption = i18next.t("media.welcome");
     const type = "audio";
 
     await whatsappService.sendMediaMessage({
@@ -124,21 +127,21 @@ class MessageHandler {
       case "name":
         state.name = message;
         state.step = "petName";
-        response = i18next.t('appointment.petName');
+        response = i18next.t("appointment.petName");
         break;
       case "petName":
         state.petName = message;
         state.step = "petType";
-        response = i18next.t('appointment.petType');
+        response = i18next.t("appointment.petType");
         break;
       case "petType":
         state.petType = message;
         state.step = "reason";
-        response = i18next.t('appointment.reason');
+        response = i18next.t("appointment.reason");
         break;
       case "reason":
         state.reason = message;
-        response = i18next.t('appointment.confirmation');
+        response = i18next.t("appointment.confirmation");
         delete this.appointmentState[to];
         break;
       default:

@@ -4,10 +4,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:prod-v1": "node server.js",
-    "start:prod-v2": "node src/app.js",
-    "start:dev-v1": "nodemon server.js",
-    "start:dev-v2": "nodemon src/app.js"
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "type": "module",
   "keywords": [],
@@ -21,6 +21,9 @@
     "i18next": "^24.2.3"
   },
   "devDependencies": {
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.31.0",
     "nodemon": "^3.1.9"
   }
 }

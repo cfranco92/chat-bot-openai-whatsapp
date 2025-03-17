@@ -11,12 +11,13 @@ const sendToWhatsApp = async (data) => {
     const response = await axios({
       method: "POST",
       url: baseUrl,
-      headers: headers,
+      headers,
       data,
     });
     return response.data;
   } catch (error) {
     console.error(error);
+    return { error: error.message };
   }
 };
 

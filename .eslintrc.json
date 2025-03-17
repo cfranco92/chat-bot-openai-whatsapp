@@ -1,0 +1,25 @@
+{
+  "env": {
+    "node": true,
+    "es2021": true
+  },
+  "extends": "airbnb-base",
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "rules": {
+    "no-console": "off",
+    "linebreak-style": ["error", "unix"],
+    "quotes": ["error", "double"],
+    "semi": ["error", "always"],
+    "max-len": ["error", { "code": 120 }],
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "import/extensions": ["error", "always"],
+    "class-methods-use-this": "off",
+    "object-curly-newline": ["error", {
+      "multiline": true,
+      "consistent": true
+    }],
+    "operator-linebreak": ["error", "after"]
+  }
+} 
