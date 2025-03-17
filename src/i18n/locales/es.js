@@ -17,6 +17,14 @@ export default {
     reason:
       "¿Cuál es el motivo de la cita? (por ejemplo: vacunación, desparasitación, etc.)",
     confirmation: "Gracias por tu preferencia. Tu cita ha sido agendada.",
+    summary: {
+      title: "Gracias {{name}} por agendar tu cita.\nResumen de tu cita:",
+      name: "Nombre: {{name}}",
+      petName: "Nombre de la mascota: {{petName}}",
+      petType: "Tipo de mascota: {{petType}}",
+      reason: "Motivo: {{reason}}",
+      followUp: "Nos pondremos en contacto contigo pronto para confirmar la fecha y hora de tu cita."
+    }
   },
   location: {
     name: "MedPet Veterinaria",
@@ -35,11 +43,14 @@ export default {
   consult: {
     prompt: "Realiza tu consulta",
   },
-  greetings: [
-    "hola",
-    "buenos días",
-    "buenas tardes",
-    "buenas noches",
-    "saludos",
-  ],
+  greetings: {
+    hi: "hola",
+    hello: "hola",
+    hey: "hey",
+    "good morning": "buenos días",
+    "good afternoon": "buenas tardes",
+    "good evening": "buenas noches",
+    greetings: "saludos",
+  },
+  echo: "Eco: {{message}}"
 };

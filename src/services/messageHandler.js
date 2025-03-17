@@ -35,7 +35,7 @@ export class MessageHandler {
           this.appointmentState[message.from]
         );
       } else {
-        const response = `Echo: ${message.text.body}`;
+        const response = i18next.t("echo", { message: message.text.body });
         await this.whatsappService.sendMessage(
           message.from,
           response,
@@ -58,21 +58,8 @@ export class MessageHandler {
 
   isGreeting(message) {
     const translatedGreetings = i18next.t("greetings", { returnObjects: true });
-    const spanishGreetings = Array.isArray(translatedGreetings)
-      ? translatedGreetings
-      : Object.keys(translatedGreetings);
-    const englishGreetings = [
-      "hi",
-      "hello",
-      "hey",
-      "good morning",
-      "good afternoon",
-      "good evening",
-      "greetings",
-    ];
-    // Combine both greeting arrays
-    const allGreetings = [...spanishGreetings, ...englishGreetings];
-    return allGreetings.some((greeting) => message.includes(greeting));
+    const greetings = Object.values(translatedGreetings);
+    return greetings.some((greeting) => message.toLowerCase().includes(greeting.toLowerCase()));
   }
 
   getSenderInfo(senderInfo) {
@@ -173,15 +160,14 @@ export class MessageHandler {
 
     console.log("User data:", userData);
 
-    return `Gracias ${appointment.name} por agendar tu cita.
-    Resumen de tu cita:
+    return `${i18next.t("appointment.summary.title", { name: appointment.name })}
 
-    Nombre: ${appointment.name}
-    Nombre de la mascota: ${appointment.petName}
-    Tipo de mascota: ${appointment.petType}
-    Motivo: ${appointment.reason}
-    
-    Nos pondremos en contacto contigo pronto para confirmar la fecha y hora de tu cita.`;
+${i18next.t("appointment.summary.name", { name: appointment.name })}
+${i18next.t("appointment.summary.petName", { petName: appointment.petName })}
+${i18next.t("appointment.summary.petType", { petType: appointment.petType })}
+${i18next.t("appointment.summary.reason", { reason: appointment.reason })}
+
+${i18next.t("appointment.summary.followUp")}`;
   }
 
   async handleAppointmentFlow(to, message) {

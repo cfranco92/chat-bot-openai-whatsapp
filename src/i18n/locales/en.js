@@ -18,6 +18,14 @@ export default {
       "What's the reason for the appointment? (for example: vaccination, deworming, etc.)",
     confirmation:
       "Thank you for your preference. Your appointment has been scheduled.",
+    summary: {
+      title: "Thank you {{name}} for scheduling your appointment.\nAppointment Summary:",
+      name: "Name: {{name}}",
+      petName: "Pet's name: {{petName}}",
+      petType: "Pet type: {{petType}}",
+      reason: "Reason: {{reason}}",
+      followUp: "We will contact you soon to confirm the date and time of your appointment."
+    }
   },
   location: {
     name: "MedPet Veterinary",
@@ -45,4 +53,5 @@ export default {
     "good evening": "good evening",
     greetings: "greetings",
   },
+  echo: "Echo: {{message}}"
 };
