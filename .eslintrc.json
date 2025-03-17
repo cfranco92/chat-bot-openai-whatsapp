@@ -21,6 +21,7 @@
       "multiline": true,
       "consistent": true
     }],
-    "operator-linebreak": ["error", "after"]
+    "operator-linebreak": "off",
+    "comma-dangle": "off"
   }
 } 

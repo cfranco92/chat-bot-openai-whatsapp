@@ -14,7 +14,10 @@ export class MessageHandler {
 
       console.log("Message received:", message);
       console.log("Sender info:", senderInfo);
-      console.log("Current appointment state:", this.appointmentState[message.from]);
+      console.log(
+        "Current appointment state:",
+        this.appointmentState[message.from]
+      );
 
       if (this.isGreeting(incomingMessage)) {
         await this.sendWelcomeMessage(message.from, message.id, senderInfo);
@@ -22,12 +25,22 @@ export class MessageHandler {
       } else if (incomingMessage === "media") {
         await this.sendMedia(message.from);
       } else if (this.appointmentState[message.from]) {
-        console.log("Processing appointment flow for state:", this.appointmentState[message.from]);
+        console.log(
+          "Processing appointment flow for state:",
+          this.appointmentState[message.from]
+        );
         await this.handleAppointmentFlow(message.from, incomingMessage);
-        console.log("Updated appointment state:", this.appointmentState[message.from]);
+        console.log(
+          "Updated appointment state:",
+          this.appointmentState[message.from]
+        );
       } else {
         const response = `Echo: ${message.text.body}`;
-        await this.whatsappService.sendMessage(message.from, response, message.id);
+        await this.whatsappService.sendMessage(
+          message.from,
+          response,
+          message.id
+        );
       }
 
       await this.whatsappService.markMessageAsRead(message.id);
@@ -35,20 +48,28 @@ export class MessageHandler {
       const option = message?.interactive?.button_reply?.id;
       console.log("Interactive option selected:", option);
       await this.handleMenuOption(message.from, option);
-      console.log("Appointment state after menu selection:", this.appointmentState[message.from]);
+      console.log(
+        "Appointment state after menu selection:",
+        this.appointmentState[message.from]
+      );
       await this.whatsappService.markMessageAsRead(message.id);
     }
   }
 
   isGreeting(message) {
-    // Get greetings from translations file
     const translatedGreetings = i18next.t("greetings", { returnObjects: true });
-    // Convert greetings to array if it's an object
-    const spanishGreetings = Array.isArray(translatedGreetings) ?
-      translatedGreetings :
-      Object.keys(translatedGreetings);
-    // English greetings as fallback
-    const englishGreetings = ["hi", "hello", "hey", "good morning", "good afternoon", "good evening", "greetings"];
+    const spanishGreetings = Array.isArray(translatedGreetings)
+      ? translatedGreetings
+      : Object.keys(translatedGreetings);
+    const englishGreetings = [
+      "hi",
+      "hello",
+      "hey",
+      "good morning",
+      "good afternoon",
+      "good evening",
+      "greetings",
+    ];
     // Combine both greeting arrays
     const allGreetings = [...spanishGreetings, ...englishGreetings];
     return allGreetings.some((greeting) => message.includes(greeting));
@@ -92,7 +113,10 @@ export class MessageHandler {
     switch (option) {
       case "option_1":
         this.appointmentState[to] = { step: "name" };
-        console.log("Starting appointment flow. Initial state:", this.appointmentState[to]);
+        console.log(
+          "Starting appointment flow. Initial state:",
+          this.appointmentState[to]
+        );
         response = i18next.t("appointment.enterName");
         break;
       case "option_2":
@@ -134,6 +158,32 @@ export class MessageHandler {
     });
   }
 
+  completeAppointment(to) {
+    const appointment = this.appointmentState[to];
+    delete this.appointmentState[to];
+
+    const userData = [
+      to,
+      appointment.name,
+      appointment.petName,
+      appointment.petType,
+      appointment.reason,
+      new Date().toISOString(),
+    ];
+
+    console.log("User data:", userData);
+
+    return `Gracias ${appointment.name} por agendar tu cita.
+    Resumen de tu cita:
+
+    Nombre: ${appointment.name}
+    Nombre de la mascota: ${appointment.petName}
+    Tipo de mascota: ${appointment.petType}
+    Motivo: ${appointment.reason}
+    
+    Nos pondremos en contacto contigo pronto para confirmar la fecha y hora de tu cita.`;
+  }
+
   async handleAppointmentFlow(to, message) {
     const state = this.appointmentState[to];
     console.log("Starting appointment flow with state:", state);
@@ -162,7 +212,7 @@ export class MessageHandler {
         break;
       case "reason":
         state.reason = message;
-        response = i18next.t("appointment.confirmation");
+        response = this.completeAppointment(to);
         delete this.appointmentState[to];
         break;
       default:
