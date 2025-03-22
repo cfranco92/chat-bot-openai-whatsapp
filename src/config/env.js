@@ -13,5 +13,6 @@ export default {
   LANGUAGE: process.env.LANGUAGE || "en",
   SPREAD_SHEET_ID: process.env.SPREAD_SHEET_ID,
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  OPENAI_MODEL: process.env.OPENAI_MODEL,
   ROLE_PROMPT: process.env.ROLE_PROMPT,
 };

@@ -18,7 +18,7 @@ const openAiService = async (message) => {
           content: message,
         },
       ],
-      model: "gpt-4o",
+      model: config.OPENAI_MODEL,
     });
 
     return response.choices[0].message.content;
