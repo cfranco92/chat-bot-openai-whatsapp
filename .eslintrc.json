@@ -22,6 +22,8 @@
       "consistent": true
     }],
     "operator-linebreak": "off",
-    "comma-dangle": "off"
+    "comma-dangle": "off",
+    "implicit-arrow-linebreak": "off",
+    "function-paren-newline": "off"
   }
 } 

@@ -1,6 +1,7 @@
 import whatsappServiceSingleton from "./whatsappService.js";
 import config from "../config/env.js";
 import i18next from "../i18n/index.js";
+import appendToSheet from "./googleSheetsService.js";
 
 export class MessageHandler {
   constructor(whatsappService = whatsappServiceSingleton) {
@@ -59,7 +60,9 @@ export class MessageHandler {
   isGreeting(message) {
     const translatedGreetings = i18next.t("greetings", { returnObjects: true });
     const greetings = Object.values(translatedGreetings);
-    return greetings.some((greeting) => message.toLowerCase().includes(greeting.toLowerCase()));
+    return greetings.some((greeting) =>
+      message.toLowerCase().includes(greeting.toLowerCase())
+    );
   }
 
   getSenderInfo(senderInfo) {
@@ -158,9 +161,11 @@ export class MessageHandler {
       new Date().toISOString(),
     ];
 
-    console.log("User data:", userData);
+    appendToSheet(userData);
 
-    return `${i18next.t("appointment.summary.title", { name: appointment.name })}
+    return `${i18next.t("appointment.summary.title", {
+      name: appointment.name,
+    })}
 
 ${i18next.t("appointment.summary.name", { name: appointment.name })}
 ${i18next.t("appointment.summary.petName", { petName: appointment.petName })}

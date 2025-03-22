@@ -11,4 +11,5 @@ export default {
   BASE_URL: process.env.BASE_URL,
   BUSINESS_NAME: process.env.BUSINESS_NAME,
   LANGUAGE: process.env.LANGUAGE || "en",
+  SPREAD_SHEET_ID: process.env.SPREAD_SHEET_ID,
 };
