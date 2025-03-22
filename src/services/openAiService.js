@@ -11,10 +11,7 @@ const openAiService = async (message) => {
       messages: [
         {
           role: "system",
-          content:
-            "Comportarte como un veterinario, deberas de resolver las preguntas lo más simple posible. " +
-            "Responde en texto plano, como si fuera una conversacio por whatsapp, no saludes, " +
-            "no generas conversaciones, solo respondes con la pregunta del usuario.",
+          content: config.ROLE_PROMPT,
         },
         {
           role: "user",
