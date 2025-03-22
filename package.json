@@ -21,7 +21,8 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "googleapis": "^148.0.0",
-    "i18next": "^24.2.3"
+    "i18next": "^24.2.3",
+    "openai": "^4.89.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",

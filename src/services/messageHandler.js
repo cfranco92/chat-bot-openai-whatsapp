@@ -2,23 +2,18 @@ import whatsappServiceSingleton from "./whatsappService.js";
 import config from "../config/env.js";
 import i18next from "../i18n/index.js";
 import appendToSheet from "./googleSheetsService.js";
+import openAiService from "./openAiService.js";
 
 export class MessageHandler {
   constructor(whatsappService = whatsappServiceSingleton) {
     this.appointmentState = {};
     this.whatsappService = whatsappService;
+    this.assistantState = {};
   }
 
   async handleIncomingMessage(message, senderInfo) {
     if (message.type === "text") {
       const incomingMessage = message.text.body.toLowerCase().trim();
-
-      console.log("Message received:", message);
-      console.log("Sender info:", senderInfo);
-      console.log(
-        "Current appointment state:",
-        this.appointmentState[message.from]
-      );
 
       if (this.isGreeting(incomingMessage)) {
         await this.sendWelcomeMessage(message.from, message.id, senderInfo);
@@ -26,33 +21,17 @@ export class MessageHandler {
       } else if (incomingMessage === "media") {
         await this.sendMedia(message.from);
       } else if (this.appointmentState[message.from]) {
-        console.log(
-          "Processing appointment flow for state:",
-          this.appointmentState[message.from]
-        );
         await this.handleAppointmentFlow(message.from, incomingMessage);
-        console.log(
-          "Updated appointment state:",
-          this.appointmentState[message.from]
-        );
+      } else if (this.assistantState[message.from]) {
+        await this.handleAssistantFlow(message.from, incomingMessage);
       } else {
-        const response = i18next.t("echo", { message: message.text.body });
-        await this.whatsappService.sendMessage(
-          message.from,
-          response,
-          message.id
-        );
+        await this.handleMenuOption(message.from, incomingMessage);
       }
 
       await this.whatsappService.markMessageAsRead(message.id);
     } else if (message.type === "interactive") {
       const option = message?.interactive?.button_reply?.id;
-      console.log("Interactive option selected:", option);
       await this.handleMenuOption(message.from, option);
-      console.log(
-        "Appointment state after menu selection:",
-        this.appointmentState[message.from]
-      );
       await this.whatsappService.markMessageAsRead(message.id);
     }
   }
@@ -78,7 +57,7 @@ export class MessageHandler {
     await this.whatsappService.sendMessage(to, welcomeMessage, messageId);
   }
 
-  async sendWelcomeMenu(to) {
+  async sendWelcomeMenu(to, errorMessage) {
     const menuMessage = i18next.t("menu.choose");
     const buttons = [
       {
@@ -95,6 +74,9 @@ export class MessageHandler {
       },
     ];
 
+    if (errorMessage) {
+      await this.whatsappService.sendMessage(to, errorMessage);
+    }
     await this.whatsappService.sendInteractiveButton(to, menuMessage, buttons);
   }
 
@@ -110,14 +92,25 @@ export class MessageHandler {
         response = i18next.t("appointment.enterName");
         break;
       case "option_2":
+        this.assistantState[to] = { step: "question" };
         response = i18next.t("consult.prompt");
         break;
       case "option_3":
         await this.sendLocation(to);
         return;
+      case "option_4":
+        await this.sendWelcomeMenu(to);
+        return;
+      case "option_5":
+        this.assistantState[to] = { step: "question" };
+        response = i18next.t("consult.prompt");
+        break;
+      case "option_6":
+        await this.sendEmergency(to);
+        return;
       default:
         console.log("Invalid menu option received:", option);
-        response = i18next.t("errors.userMenuOption");
+        await this.sendWelcomeMenu(to, i18next.t("errors.userMenuOption"));
         break;
     }
 
@@ -214,6 +207,32 @@ ${i18next.t("appointment.summary.followUp")}`;
 
     console.log("Updated state:", this.appointmentState[to]);
     await this.whatsappService.sendMessage(to, response);
+  }
+
+  async handleAssistantFlow(to, message) {
+    const state = this.assistantState[to];
+    console.log("Starting assistant flow with state:", state);
+    let response;
+
+    const menuMessage = "¿La respuesta fue de tu ayuda?";
+    const buttons = [
+      { id: "option_4", title: "Si, Gracias" },
+      { id: "option_5", title: "Hacer otra pregunta" },
+      { id: "option_6", title: "Emergencia" },
+    ];
+
+    if (state.step === "question") {
+      response = await openAiService(message);
+    }
+
+    delete this.assistantState[to];
+    await this.whatsappService.sendMessage(to, response);
+    await this.whatsappService.sendInteractiveButton(to, menuMessage, buttons);
+  }
+
+  async sendEmergency(to) {
+    const emergencyMessage = i18next.t("emergency.message");
+    await this.whatsappService.sendMessage(to, emergencyMessage);
   }
 }
 

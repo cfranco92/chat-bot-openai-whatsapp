@@ -12,4 +12,5 @@ export default {
   BUSINESS_NAME: process.env.BUSINESS_NAME,
   LANGUAGE: process.env.LANGUAGE || "en",
   SPREAD_SHEET_ID: process.env.SPREAD_SHEET_ID,
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY,
 };
