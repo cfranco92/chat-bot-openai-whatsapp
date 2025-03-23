@@ -1,11 +1,11 @@
-# WhatsApp API - Veterinary Appointment Bot
+# WhatsApp API - Business Chatbot
 
-A WhatsApp bot for managing veterinary appointments using the official WhatsApp Business API. The bot allows users to schedule appointments for their pets through an interactive conversation flow.
+A flexible WhatsApp bot using the official WhatsApp Business API. The bot can be configured for various business purposes through environment variables, supporting different conversation flows and roles. Currently configured for appointment scheduling with multi-language support.
 
 ## 🚀 Features
 
 - WhatsApp webhook for receiving and processing messages
-- Appointment management system with conversational flow
+- Configurable conversation flows through environment variables
 - Multi-language support (English and Spanish)
 - Support for different message types:
   - Text
@@ -15,7 +15,7 @@ A WhatsApp bot for managing veterinary appointments using the official WhatsApp 
   - Contacts
 - Robust error handling system
 - Comprehensive unit and integration tests
-- Google Sheets integration for appointment storage
+- Google Sheets integration for data storage
 
 ## 📋 Prerequisites
 
@@ -48,7 +48,9 @@ Edit the `.env` file with your credentials:
 WHATSAPP_TOKEN=your_whatsapp_token    # Your WhatsApp Business API token
 VERIFY_TOKEN=your_verification_token   # Your webhook verification token
 LANGUAGE=en                           # Language setting (en/es)
-SPREAD_SHEET_ID=your_spreadsheet_id   # Google Sheets ID for appointments
+SPREAD_SHEET_ID=your_spreadsheet_id   # Google Sheets ID for data storage
+BUSINESS_NAME=Your Business Name      # Name of your business
+BUSINESS_ROLE=Your Business Role      # Role/purpose of your business
 ```
 
 4. Set up Google Sheets:
@@ -72,18 +74,16 @@ npm start
 3. Receive messages:
 - Incoming messages will be processed automatically
 - The bot will respond according to the configured conversation flow
-- Appointments will be stored in Google Sheets
+- Data will be stored in Google Sheets
 
-## 💬 Appointment Flow
+## 💬 Conversation Flow
 
-The bot handles the following flow for scheduling appointments:
+The bot can be configured for different conversation flows. The current implementation includes:
 
 1. Initial greeting and options menu
-2. Request client's name
-3. Request pet's name
-4. Request pet type
-5. Request appointment reason
-6. Appointment confirmation and storage in Google Sheets
+2. Interactive conversation based on user selection
+3. Data collection and validation
+4. Confirmation and storage in Google Sheets
 
 ## 🧪 Testing
 
@@ -107,7 +107,7 @@ npm run lint
 - Unit tests for `GoogleSheetsService`
 - Integration tests for webhook
 - Integration tests for service flow
-- Integration tests for appointment management
+- Integration tests for conversation management
 
 ## 📦 Project Structure
 
@@ -143,7 +143,7 @@ src/
 - Supertest - API testing
 - dotenv - Environment variables management
 - i18next - Internationalization
-- Google Sheets API - Appointment storage
+- Google Sheets API - Data storage
 - WhatsApp Business API - Messaging platform
 
 ## 🤝 Contributing
