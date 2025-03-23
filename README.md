@@ -1,191 +1,193 @@
-# WhatsApp API para Clínica Veterinaria
+# WhatsApp API for Veterinary Clinic
 
-Una aplicación Node.js que integra la API de WhatsApp Business para gestionar mensajería automatizada, citas veterinarias y menús interactivos para una clínica veterinaria.
+A Node.js application that integrates with the WhatsApp Business API to manage automated messaging, veterinary appointments, and interactive menus for a veterinary clinic.
 
-## Características
+## Features
 
-- 🌐 Soporte multilingüe (Español/Inglés)
-- 📅 Sistema de programación de citas
-- 🔄 Menú interactivo con botones
-- 📍 Compartir ubicación
-- 📸 Soporte para mensajes multimedia (imágenes, audio, video, documentos)
-- ✨ Respuestas automáticas de bienvenida
-- ✅ Confirmación de lectura de mensajes
-- 🧠 Asistente IA para consultas generales usando OpenAI
-- 📊 Integración con Google Sheets para almacenar citas
+- 🌐 Multi-language support (Spanish/English)
+- 📅 Appointment scheduling system
+- 🔄 Interactive menu with buttons
+- 📍 Location sharing
+- 📸 Support for multimedia messages (images, audio, video, documents)
+- ✨ Automatic welcome responses
+- ✅ Message read confirmation
+- 🧠 AI assistant for general inquiries using OpenAI
+- 📊 Integration with Google Sheets for storing appointments
 
-## Requisitos previos
+## Prerequisites
 
-- Node.js v18 o superior
-- Acceso a WhatsApp Business API
-- Cuenta de desarrollador en Meta
-- Certificado SSL válido (para producción)
-- Cuenta de Google Cloud Platform (para la integración con Google Sheets)
-- Cuenta de OpenAI (para el asistente IA)
+- Node.js v18 or higher
+- Access to WhatsApp Business API
+- Meta Developer Account
+- Valid SSL certificate (for production)
+- Google Cloud Platform account (for Google Sheets integration)
+- OpenAI account (for AI assistant)
 
-## Instalación
+## Installation
 
-1. Clona el repositorio:
+1. Clone the repository:
 ```bash
-git clone https://github.com/tuusuario/whatsapp-api.git
+git clone https://github.com/yourusername/whatsapp-api.git
 cd whatsapp-api
 ```
 
-2. Instala las dependencias:
+2. Install dependencies:
 ```bash
 npm install
 ```
 
-3. Crea un archivo `.env` en el directorio raíz con las siguientes variables (ver `.env-example`):
+3. Create a `.env` file in the root directory with the following variables (see `.env-example`):
 ```env
-WEBHOOK_VERIFY_TOKEN=tu_token_de_verificacion
-API_TOKEN=tu_token_de_api_meta
+WEBHOOK_VERIFY_TOKEN=your_verification_token
+API_TOKEN=your_meta_api_token
 PORT=3000
-BUSINESS_PHONE=tu_id_de_telefono_de_whatsapp_business
+BUSINESS_PHONE=your_whatsapp_business_phone_id
 API_VERSION=v22.0
 BASE_URL=https://graph.facebook.com
-BUSINESS_NAME=nombre_de_tu_negocio
-LANGUAGE=es
-OPENAI_API_KEY=tu_clave_api_openai
-GOOGLE_APPLICATION_CREDENTIALS=ruta_a_tu_archivo_de_credenciales
-GOOGLE_SHEET_ID=tu_id_de_hoja_de_calculo
+BUSINESS_NAME=your_business_name
+LANGUAGE=en
+OPENAI_API_KEY=your_openai_api_key
+OPENAI_MODEL=gpt-4
+ROLE_PROMPT=your_system_prompt
+SPREAD_SHEET_ID=your_sheet_id
+CONTACT=emergency_contact_info
 ```
 
-## Uso
+## Usage
 
-### Desarrollo
+### Development
 ```bash
 npm run dev
 ```
 
-### Producción
+### Production
 ```bash
 npm start
 ```
 
-### Pruebas
+### Testing
 ```bash
-# Ejecutar todas las pruebas
+# Run all tests
 npm test
 
-# Ejecutar pruebas en modo observador
+# Run tests in watch mode
 npm run test:watch
 
-# Ejecutar pruebas con cobertura
+# Run tests with coverage
 npm run test:coverage
 ```
 
 ### Linting
 ```bash
-# Ejecutar linter
+# Run linter
 npm run lint
 
-# Corregir problemas de linting
+# Fix linting issues
 npm run lint:fix
 ```
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 src/
-├── __tests__/           # Archivos de pruebas
-├── config/              # Archivos de configuración
-├── controllers/         # Controladores de rutas
-│   └── webhookController.js  # Controlador del webhook
-├── credentials/         # Credenciales para APIs externas
-├── i18n/                # Internacionalización
-│   └── locales/         # Archivos de idiomas (es.js, en.js)
-├── routes/              # Definición de rutas
-│   └── webhookRoutes.js # Rutas del webhook
-├── services/            # Lógica de negocio
-│   ├── googleSheetsService.js  # Servicio para Google Sheets
-│   ├── messageHandler.js       # Manejador de mensajes
-│   ├── openAiService.js        # Integración con OpenAI
-│   ├── whatsappService.js      # Servicio de WhatsApp
-│   └── httpRequest/            # Comunicación API
-└── app.js               # Punto de entrada de la aplicación
+├── __tests__/           # Test files
+├── config/              # Configuration files
+├── controllers/         # Route controllers
+│   └── webhookController.js  # Webhook controller
+├── credentials/         # Credentials for external APIs
+├── i18n/                # Internationalization
+│   └── locales/         # Language files (es.js, en.js)
+├── routes/              # Route definitions
+│   └── webhookRoutes.js # Webhook routes
+├── services/            # Business logic
+│   ├── googleSheetsService.js  # Google Sheets service
+│   ├── messageHandler.js       # Message handler
+│   ├── openAiService.js        # OpenAI integration
+│   ├── whatsappService.js      # WhatsApp service
+│   └── httpRequest/            # API communication
+└── app.js               # Application entry point
 ```
 
-## Endpoints de la API
+## API Endpoints
 
-### Verificación del Webhook
+### Webhook Verification
 - `GET /webhook`
-  - Verifica la URL del webhook con la API de WhatsApp Business
-  - Parámetros de consulta:
+  - Verifies the webhook URL with the WhatsApp Business API
+  - Query parameters:
     - `hub.mode`: subscribe
-    - `hub.verify_token`: Tu token de verificación
-    - `hub.challenge`: Cadena de desafío
+    - `hub.verify_token`: Your verification token
+    - `hub.challenge`: Challenge string
 
-### Recepción de Mensajes
+### Receiving Messages
 - `POST /webhook`
-  - Recibe mensajes y eventos entrantes de WhatsApp
-  - Maneja:
-    - Mensajes de texto
-    - Respuestas de botones interactivos
-    - Estado de lectura de mensajes
+  - Receives incoming messages and events from WhatsApp
+  - Handles:
+    - Text messages
+    - Interactive button responses
+    - Message read status
 
-## Flujos Implementados
+## Implemented Flows
 
-### Flujo de Citas
-1. El usuario envía un saludo
-2. El sistema responde con un mensaje de bienvenida y menú
-3. El usuario selecciona la opción "Agendar"
-4. El sistema solicita:
-   - Nombre del propietario
-   - Nombre de la mascota
-   - Tipo de mascota
-   - Motivo de la cita
-5. El sistema confirma la cita y la guarda en Google Sheets
+### Appointment Flow
+1. User sends a greeting
+2. System responds with a welcome message and menu
+3. User selects the "Schedule" option
+4. System requests:
+   - Owner name
+   - Pet name
+   - Pet type
+   - Appointment reason
+5. System confirms the appointment and saves it to Google Sheets
 
-### Asistente IA
-1. El usuario selecciona "Consulta general"
-2. El sistema activa el modo asistente con OpenAI
-3. El usuario puede hacer preguntas sobre cuidado de mascotas
-4. El asistente responde usando el modelo de OpenAI
+### AI Assistant
+1. User selects "General Inquiry"
+2. System activates assistant mode with OpenAI
+3. User can ask questions about pet care
+4. Assistant responds using the OpenAI model
 
-### Emergencia
-- Proporciona información de contacto inmediato
-- Muestra horarios de atención de emergencia
+### Emergency
+- Provides immediate contact information
+- Shows emergency service hours
 
-### Menú Interactivo
-- Agendar cita
-- Consulta general (Asistente IA)
-- Obtener ubicación del negocio
-- Emergencia
+### Interactive Menu
+- Schedule appointment
+- General inquiry (AI Assistant)
+- Get business location
+- Emergency
 
-### Tipos de Mensajes Soportados
-- Mensajes de texto
-- Botones interactivos
-- Compartir ubicación
-- Mensajes multimedia (audio, video, imágenes, documentos)
+### Supported Message Types
+- Text messages
+- Interactive buttons
+- Location sharing
+- Multimedia messages (audio, video, images, documents)
 
-## Pruebas
+## Tests
 
-El proyecto incluye pruebas unitarias completas para:
-- Manejo de mensajes
-- Integración del servicio de WhatsApp
-- Controlador de webhook
-- Flujo de citas
-- Soporte multilingüe
-- Integración con OpenAI
+The project includes comprehensive unit tests for:
+- Message handling
+- WhatsApp service integration
+- Webhook controller
+- Appointment flow
+- Multi-language support
+- OpenAI integration
 
-## Contribuir
+## Contributing
 
-1. Haz un fork del repositorio
-2. Crea tu rama de características (`git checkout -b feature/CaracteristicaIncreible`)
-3. Confirma tus cambios (`git commit -m 'Añadir alguna CaracteristicaIncreible'`)
-4. Empuja a la rama (`git push origin feature/CaracteristicaIncreible`)
-5. Abre una Pull Request
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## Licencia
+## License
 
-Este proyecto está licenciado bajo la Licencia ISC.
+This project is licensed under the ISC License.
 
-## Agradecimientos
+## Acknowledgements
 
-- API de WhatsApp Business de Meta
-- i18next para internacionalización
-- Jest para pruebas
-- ESLint para calidad de código
-- OpenAI para integración de IA
-- Google Sheets API para almacenamiento de datos 
+- Meta WhatsApp Business API
+- i18next for internationalization
+- Jest for testing
+- ESLint for code quality
+- OpenAI for AI integration
+- Google Sheets API for data storage 
