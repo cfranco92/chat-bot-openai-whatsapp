@@ -13,9 +13,9 @@
     "lint:fix": "eslint . --fix"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "Cristian Franco <cfrancobedoya@gmail.com>",
+  "license": "MIT",
+  "description": "A flexible WhatsApp bot using the official WhatsApp Business API",
   "dependencies": {
     "axios": "^1.8.3",
     "dotenv": "^16.4.7",
