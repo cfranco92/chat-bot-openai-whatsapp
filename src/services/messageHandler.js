@@ -7,8 +7,9 @@ import openAiService from "./openAiService.js";
 export class MessageHandler {
   constructor(whatsappService = whatsappServiceSingleton) {
     this.appointmentState = {};
-    this.whatsappService = whatsappService;
     this.assistantState = {};
+    this.whatsappService = whatsappService;
+    this.openAiService = openAiService;
   }
 
   async handleIncomingMessage(message, senderInfo) {
@@ -227,7 +228,7 @@ ${i18next.t("appointment.summary.followUp")}`;
     ];
 
     if (state.step === "question") {
-      response = await openAiService(message);
+      response = await this.openAiService(message);
     }
 
     delete this.assistantState[to];

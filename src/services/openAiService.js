@@ -1,12 +1,15 @@
 import OpenAI from "openai";
 import config from "../config/env.js";
 
-const client = new OpenAI({
-  apiKey: config?.OPENAI_API_KEY,
-});
-
 const openAiService = async (message) => {
   try {
+    if (!config.OPENAI_API_KEY) {
+      throw new Error("OPENAI_API_KEY is not set");
+    }
+
+    const client = new OpenAI({
+      apiKey: config.OPENAI_API_KEY,
+    });
     const response = await client.chat.completions.create({
       messages: [
         {
