@@ -152,7 +152,7 @@ export class MessageHandler {
     });
   }
 
-  completeAppointment(to) {
+  async completeAppointment(to) {
     const appointment = this.appointmentState[to];
     delete this.appointmentState[to];
 
@@ -165,7 +165,7 @@ export class MessageHandler {
       new Date().toISOString(),
     ];
 
-    this.appendToSheetService(userData);
+    await this.appendToSheetService(userData);
 
     return `${i18next.t("appointment.summary.title", {
       name: appointment.name,
@@ -207,7 +207,7 @@ ${i18next.t("appointment.summary.followUp")}`;
         break;
       case "reason":
         state.reason = message;
-        response = this.completeAppointment(to);
+        response = await this.completeAppointment(to);
         delete this.appointmentState[to];
         break;
       default:
