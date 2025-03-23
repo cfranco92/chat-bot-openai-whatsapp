@@ -31,7 +31,7 @@ A flexible WhatsApp bot using the official WhatsApp Business API and OpenAI inte
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/chat-bot-openai-whatsapp.git
+git clone https://github.com/cfranco92/chat-bot-openai-whatsapp.git
 cd chat-bot-openai-whatsapp
 ```
 
