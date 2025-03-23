@@ -1,15 +1,20 @@
 import whatsappServiceSingleton from "./whatsappService.js";
 import config from "../config/env.js";
 import i18next from "../i18n/index.js";
-import appendToSheet from "./googleSheetsService.js";
-import openAiService from "./openAiService.js";
+import appendToSheetServiceSingleton from "./googleSheetsService.js";
+import openAiServiceSingleton from "./openAiService.js";
 
 export class MessageHandler {
-  constructor(whatsappService = whatsappServiceSingleton) {
+  constructor(
+    whatsappService = whatsappServiceSingleton,
+    openAiService = openAiServiceSingleton,
+    appendToSheet = appendToSheetServiceSingleton
+  ) {
     this.appointmentState = {};
     this.assistantState = {};
     this.whatsappService = whatsappService;
     this.openAiService = openAiService;
+    this.appendToSheetService = appendToSheet;
   }
 
   async handleIncomingMessage(message, senderInfo) {
@@ -160,7 +165,7 @@ export class MessageHandler {
       new Date().toISOString(),
     ];
 
-    appendToSheet(userData);
+    this.appendToSheetService(userData);
 
     return `${i18next.t("appointment.summary.title", {
       name: appointment.name,
