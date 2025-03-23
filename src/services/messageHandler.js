@@ -106,7 +106,8 @@ export class MessageHandler {
         response = i18next.t("consult.prompt");
         break;
       case "option_6":
-        response = i18next.t("contact.message");
+        response =
+          "Aquí está nuestra información de contacto para emergencias:";
         await this.sendContact(to);
         return;
       default:
@@ -244,56 +245,53 @@ ${i18next.t("appointment.summary.followUp")}`;
   }
 
   async sendContact(to) {
-    const contactDetails = i18next.t("contact.details", {
-      returnObjects: true,
-    });
     const contact = {
       addresses: [
         {
-          street: contactDetails.street,
-          city: contactDetails.city,
-          state: contactDetails.state,
-          zip: contactDetails.zip,
-          country: contactDetails.country,
+          street: "123 Calle de las Mascotas",
+          city: "Ciudad",
+          state: "Estado",
+          zip: "12345",
+          country: "País",
           country_code: "PA",
           type: "WORK",
         },
       ],
       emails: [
         {
-          email: contactDetails.email,
+          email: "contacto@medpet.com",
           type: "WORK",
         },
       ],
       name: {
-        formatted_name: contactDetails.name,
-        first_name: contactDetails.company,
-        last_name: contactDetails.department,
+        formatted_name: "MedPet Contacto",
+        first_name: "MedPet",
+        last_name: "Contacto",
         middle_name: "",
         suffix: "",
         prefix: "",
       },
       org: {
-        company: contactDetails.company,
-        department: contactDetails.department,
-        title: contactDetails.title,
+        company: "MedPet",
+        department: "Atención al Cliente",
+        title: "Representante",
       },
       phones: [
         {
-          phone: contactDetails.phone,
+          phone: "+1234567890",
           wa_id: "1234567890",
           type: "WORK",
         },
       ],
       urls: [
         {
-          url: contactDetails.website,
+          url: "https://www.medpet.com",
           type: "WORK",
         },
       ],
     };
 
-    return this.whatsappService.sendContactMessage(to, contact);
+    await this.whatsappService.sendContactMessage(to, contact);
   }
 }
 

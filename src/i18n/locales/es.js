@@ -47,23 +47,6 @@ export default {
     anotherQuestion: "Hacer otra pregunta",
     emergency: "Emergencia"
   },
-  contact: {
-    message: "Aquí está nuestra información de contacto para emergencias:",
-    details: {
-      street: "123 Calle de las Mascotas",
-      city: "Ciudad",
-      state: "Estado",
-      zip: "12345",
-      country: "País",
-      email: "contacto@medpet.com",
-      name: "MedPet Contacto",
-      company: "MedPet",
-      department: "Atención al Cliente",
-      title: "Representante",
-      phone: "+1234567890",
-      website: "https://www.medpet.com"
-    }
-  },
   greetings: {
     hi: "hola",
     hello: "hola",
