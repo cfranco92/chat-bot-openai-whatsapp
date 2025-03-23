@@ -18,7 +18,20 @@ export class MessageHandler {
   }
 
   async handleIncomingMessage(message, senderInfo) {
+    // Validar mensaje
+    if (!message) {
+      throw new Error("Invalid message object");
+    }
+
+    if (!message.type || !message.from || !message.id) {
+      throw new Error("Missing required message properties");
+    }
+
     if (message.type === "text") {
+      if (!message.text || !message.text.body) {
+        throw new Error("Invalid text message format");
+      }
+
       const incomingMessage = message.text.body.toLowerCase().trim();
 
       if (this.isGreeting(incomingMessage)) {
@@ -36,9 +49,44 @@ export class MessageHandler {
 
       await this.whatsappService.markMessageAsRead(message.id);
     } else if (message.type === "interactive") {
-      const option = message?.interactive?.button_reply?.id;
+      if (!message.interactive || !message.interactive.button_reply) {
+        throw new Error("Invalid interactive message format");
+      }
+
+      const option = message.interactive.button_reply.id;
       await this.handleMenuOption(message.from, option);
       await this.whatsappService.markMessageAsRead(message.id);
+    } else if (message.type === "location") {
+      await this.whatsappService.markMessageAsRead(message.id);
+      await this.whatsappService.sendMessage(
+        message.from,
+        i18next.t("messages.locationReceived"),
+        message.id,
+      );
+    } else if (message.type === "contacts") {
+      await this.whatsappService.markMessageAsRead(message.id);
+      await this.whatsappService.sendMessage(
+        message.from,
+        i18next.t("messages.contactReceived"),
+        message.id,
+      );
+    } else if (message.type === "document") {
+      await this.whatsappService.markMessageAsRead(message.id);
+      await this.whatsappService.sendMessage(
+        message.from,
+        i18next.t("messages.documentReceived"),
+        message.id,
+      );
+    } else if (message.type === "image") {
+      await this.whatsappService.markMessageAsRead(message.id);
+      await this.whatsappService.sendMessage(
+        message.from,
+        i18next.t("messages.imageReceived"),
+        message.id,
+      );
+    } else {
+      await this.whatsappService.markMessageAsRead(message.id);
+      throw new Error("errors.unsupportedMessageType");
     }
   }
 
@@ -182,42 +230,70 @@ ${i18next.t("appointment.summary.followUp")}`;
   async handleAppointmentFlow(to, message) {
     const state = this.appointmentState[to];
     console.log("Starting appointment flow with state:", state);
-    let response;
 
     if (!state) {
       console.error("No appointment state found for:", to);
+      await this.whatsappService.sendMessage(
+        to,
+        i18next.t("errors.appointmentState")
+      );
       return;
     }
 
-    switch (state.step) {
-      case "name":
-        state.name = message;
-        state.step = "petName";
-        response = i18next.t("appointment.petName");
-        break;
-      case "petName":
-        state.petName = message;
-        state.step = "petType";
-        response = i18next.t("appointment.petType");
-        break;
-      case "petType":
-        state.petType = message;
-        state.step = "reason";
-        response = i18next.t("appointment.reason");
-        break;
-      case "reason":
-        state.reason = message;
-        response = await this.completeAppointment(to);
-        delete this.appointmentState[to];
-        break;
-      default:
-        console.error("Invalid appointment state:", state.step);
-        delete this.appointmentState[to];
-        throw new Error("Invalid appointment state");
+    if (!message || message.trim() === "") {
+      await this.whatsappService.sendMessage(
+        to,
+        i18next.t("errors.invalidInput")
+      );
+      return;
     }
 
-    console.log("Updated state:", this.appointmentState[to]);
-    await this.whatsappService.sendMessage(to, response);
+    if (message.length > 100) {
+      await this.whatsappService.sendMessage(
+        to,
+        i18next.t("errors.inputTooLong")
+      );
+      return;
+    }
+
+    let response;
+    try {
+      switch (state.step) {
+        case "name":
+          state.name = message;
+          state.step = "petName";
+          response = i18next.t("appointment.petName");
+          break;
+        case "petName":
+          state.petName = message;
+          state.step = "petType";
+          response = i18next.t("appointment.petType");
+          break;
+        case "petType":
+          state.petType = message;
+          state.step = "reason";
+          response = i18next.t("appointment.reason");
+          break;
+        case "reason":
+          state.reason = message;
+          response = await this.completeAppointment(to);
+          break;
+        default:
+          console.error("Invalid appointment state:", state.step);
+          delete this.appointmentState[to];
+          throw new Error("Invalid appointment state");
+      }
+
+      console.log("Updated state:", this.appointmentState[to]);
+      await this.whatsappService.sendMessage(to, response);
+    } catch (error) {
+      console.error("Error in appointment flow:", error);
+      await this.whatsappService.sendMessage(
+        to,
+        i18next.t("errors.general")
+      );
+      delete this.appointmentState[to];
+    }
   }
 
   async handleAssistantFlow(to, message) {

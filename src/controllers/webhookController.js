@@ -3,6 +3,10 @@ import messageHandler from "../services/messageHandler.js";
 
 class WebhookController {
   async handleIncoming(req, res) {
+    if (req.body.object !== "whatsapp_business_account") {
+      return res.status(400).json({ error: "Invalid webhook data" });
+    }
+
     const message = req.body.entry?.[0]?.changes[0]?.value?.messages?.[0];
     const senderInfo = req.body.entry?.[0]?.changes[0]?.value?.contacts?.[0];
 
@@ -11,7 +15,7 @@ class WebhookController {
       console.log("Sender info: ", senderInfo);
       await messageHandler.handleIncomingMessage(message, senderInfo);
     }
-    res.sendStatus(200);
+    return res.sendStatus(200);
   }
 
   verifyWebhook(req, res) {

@@ -1,0 +1,63 @@
+{
+  "greetings": {
+    "hi": "hola",
+    "hello": "hola",
+    "hey": "hey",
+    "good morning": "buenos días",
+    "good afternoon": "buenas tardes",
+    "good evening": "buenas noches",
+    "greetings": "saludos"
+  },
+  "welcome": {
+    "greeting": "¡Hola {{name}}! Bienvenido a {{businessName}}",
+    "help": "¿En qué puedo ayudarte?"
+  },
+  "menu": {
+    "choose": "Por favor, selecciona una opción:",
+    "schedule": "Agendar cita",
+    "consult": "Consultar",
+    "location": "Ubicación"
+  },
+  "appointment": {
+    "enterName": "Por favor, ingresa tu nombre:",
+    "petName": "Gracias. Ahora, ¿cuál es el nombre de tu mascota?",
+    "petType": "Perfecto. Ahora, ¿qué tipo de mascota es? (por ejemplo: perro, gato, hurón, etc.)",
+    "reason": "¿Cuál es el motivo de la cita? (por ejemplo: vacunación, desparasitación, etc.)",
+    "summary": {
+      "title": "Gracias {{name}} por agendar tu cita.\nResumen de tu cita:",
+      "name": "Nombre: {{name}}",
+      "petName": "Nombre de la mascota: {{petName}}",
+      "petType": "Tipo de mascota: {{petType}}",
+      "reason": "Motivo: {{reason}}",
+      "followUp": "Nos pondremos en contacto contigo pronto para confirmar la fecha y hora de tu cita."
+    }
+  },
+  "consult": {
+    "prompt": "¿Cuál es tu consulta?",
+    "feedback": "¿Te ayudó mi respuesta?",
+    "thankYou": "Gracias",
+    "anotherQuestion": "Otra pregunta",
+    "emergency": "Emergencia"
+  },
+  "location": {
+    "message": "Nos encontramos en:"
+  },
+  "media": {
+    "welcome": "Bienvenido a nuestro consultorio",
+    "image": "Nuestras instalaciones",
+    "video": "Tour por el consultorio",
+    "document": "Información importante"
+  },
+  "messages": {
+    "locationReceived": "Gracias por compartir tu ubicación",
+    "contactReceived": "Gracias por compartir el contacto",
+    "documentReceived": "Gracias por compartir el documento"
+  },
+  "errors": {
+    "userMenuOption": "Opción no válida. Por favor, selecciona una de las opciones disponibles.",
+    "appointmentState": "Lo siento, hubo un error con tu cita. Por favor, intenta nuevamente.",
+    "invalidInput": "La entrada no es válida. Por favor, intenta nuevamente.",
+    "inputTooLong": "El texto es demasiado largo. Por favor, sé más breve.",
+    "general": "Lo siento, ocurrió un error. Por favor, intenta nuevamente."
+  }
+} 

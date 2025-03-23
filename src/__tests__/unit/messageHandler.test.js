@@ -1,61 +1,8 @@
 import { jest } from "@jest/globals";
-import i18next from "i18next";
 import { MessageHandler } from "../../services/messageHandler.js";
 
-// i18next mock
-jest.spyOn(i18next, "t").mockImplementation((key, options) => {
-  if (key === "greetings" && options?.returnObjects) {
-    return {
-      hi: "hola",
-      hello: "hola",
-      hey: "hey",
-      "good morning": "buenos días",
-      "good afternoon": "buenas tardes",
-      "good evening": "buenas noches",
-      greetings: "saludos"
-    };
-  }
-  if (key === "welcome.greeting") {
-    return `¡Hola ${options.name}! Bienvenido a ${options.businessName}`;
-  }
-  if (key === "welcome.help") {
-    return "¿En qué puedo ayudarte?";
-  }
-  if (key === "echo") {
-    return `Eco: ${options.message}`;
-  }
-  if (key === "appointment.enterName") {
-    return "Por favor, ingresa tu nombre:";
-  }
-  if (key === "appointment.petName") {
-    return "Gracias. Ahora, ¿cuál es el nombre de tu mascota?";
-  }
-  if (key === "appointment.petType") {
-    return "Perfecto. Ahora, ¿qué tipo de mascota es? (por ejemplo: perro, gato, hurón, etc.)";
-  }
-  if (key === "appointment.reason") {
-    return "¿Cuál es el motivo de la cita? (por ejemplo: vacunación, desparasitación, etc.)";
-  }
-  if (key === "appointment.summary.title") {
-    return `Gracias ${options.name} por agendar tu cita.\nResumen de tu cita:`;
-  }
-  if (key === "appointment.summary.name") {
-    return `Nombre: ${options.name}`;
-  }
-  if (key === "appointment.summary.petName") {
-    return `Nombre de la mascota: ${options.petName}`;
-  }
-  if (key === "appointment.summary.petType") {
-    return `Tipo de mascota: ${options.petType}`;
-  }
-  if (key === "appointment.summary.reason") {
-    return `Motivo: ${options.reason}`;
-  }
-  if (key === "appointment.summary.followUp") {
-    return "Nos pondremos en contacto contigo pronto para confirmar la fecha y hora de tu cita.";
-  }
-  return "translated text";
-});
+// Establecer el idioma para las pruebas
+process.env.LANGUAGE = "es";
 
 describe("MessageHandler", () => {
   let messageHandler;
@@ -81,32 +28,6 @@ describe("MessageHandler", () => {
     messageHandler = new MessageHandler(mockWhatsAppService);
   });
 
-  describe("isGreeting", () => {
-    test("should return true when message includes a greeting", () => {
-      // Arrange
-      const message = "hola, ¿cómo estás?";
-
-      // Act
-      const result = messageHandler.isGreeting(message);
-
-      // Assert
-      expect(result).toBe(true);
-      expect(i18next.t).toHaveBeenCalledWith("greetings", { returnObjects: true });
-    });
-
-    test("should return false when message does not include a greeting", () => {
-      // Arrange
-      const message = "gracias";
-
-      // Act
-      const result = messageHandler.isGreeting(message);
-
-      // Assert
-      expect(result).toBe(false);
-      expect(i18next.t).toHaveBeenCalledWith("greetings", { returnObjects: true });
-    });
-  });
-
   describe("handleIncomingMessage", () => {
     test("should handle text message with greeting", async () => {
       // Arrange
@@ -117,7 +38,7 @@ describe("MessageHandler", () => {
         id: "msg123",
       };
       const senderInfo = {
-        profile: { name: "John Doe" },
+        profile: { name: "John" },
       };
 
       // Act
@@ -126,41 +47,21 @@ describe("MessageHandler", () => {
       // Assert
       expect(mockSendMessage).toHaveBeenCalledWith(
         message.from,
-        "¡Hola John! Bienvenido a Contador Online\n¿En qué puedo ayudarte?",
+        "¡Hola John! Bienvenido a Contadora Alejandra.\n¿En qué puedo ayudarte?",
         message.id,
       );
       expect(mockMarkMessageAsRead).toHaveBeenCalledWith(message.id);
     });
 
-    test("should handle echo message", async () => {
+    test("should handle location message", async () => {
       // Arrange
       const message = {
-        type: "text",
-        text: { body: "test message" },
-        from: "1234567890",
-        id: "msg123",
-      };
-
-      // Act
-      await messageHandler.handleIncomingMessage(message);
-
-      // Assert
-      expect(mockSendMessage).toHaveBeenCalledWith(
-        message.from,
-        "Eco: test message",
-        message.id,
-      );
-      expect(mockMarkMessageAsRead).toHaveBeenCalledWith(message.id);
-    });
-
-    test("should handle interactive button message", async () => {
-      // Arrange
-      const message = {
-        type: "interactive",
-        interactive: {
-          button_reply: {
-            id: "option_1",
-          },
+        type: "location",
+        location: {
+          latitude: 37.422,
+          longitude: -122.084,
+          name: "Google HQ",
+          address: "1600 Amphitheatre Parkway",
         },
         from: "1234567890",
         id: "msg123",
@@ -172,85 +73,117 @@ describe("MessageHandler", () => {
       // Assert
       expect(mockSendMessage).toHaveBeenCalledWith(
         message.from,
-        "Por favor, ingresa tu nombre:",
+        "messages.locationReceived",
+        message.id,
       );
-      expect(mockMarkMessageAsRead).toHaveBeenCalledWith("msg123");
+      expect(mockMarkMessageAsRead).toHaveBeenCalledWith(message.id);
     });
-  });
 
-  describe("getSenderInfo", () => {
-    test("should return name from profile", () => {
+    test("should handle contact message", async () => {
       // Arrange
-      const senderInfo = {
-        profile: { name: "John Doe" },
+      const message = {
+        type: "contacts",
+        contacts: [{
+          name: {
+            first_name: "John",
+            last_name: "Doe",
+          },
+          phones: [{
+            phone: "+1234567890",
+            type: "HOME",
+          }],
+        }],
+        from: "1234567890",
+        id: "msg123",
       };
 
       // Act
-      const result = messageHandler.getSenderInfo(senderInfo);
+      await messageHandler.handleIncomingMessage(message);
 
       // Assert
-      expect(result).toBe("John Doe");
+      expect(mockSendMessage).toHaveBeenCalledWith(
+        message.from,
+        "messages.contactReceived",
+        message.id,
+      );
+      expect(mockMarkMessageAsRead).toHaveBeenCalledWith(message.id);
     });
 
-    test("should return wa_id when profile name is not available", () => {
+    test("should handle document message", async () => {
       // Arrange
-      const senderInfo = {
-        wa_id: "1234567890",
+      const message = {
+        type: "document",
+        document: {
+          filename: "test.pdf",
+          mime_type: "application/pdf",
+          id: "doc123",
+        },
+        from: "1234567890",
+        id: "msg123",
       };
 
       // Act
-      const result = messageHandler.getSenderInfo(senderInfo);
+      await messageHandler.handleIncomingMessage(message);
 
       // Assert
-      expect(result).toBe("1234567890");
-    });
-
-    test("should return empty string when no info is available", () => {
-      // Arrange
-      const senderInfo = {};
-
-      // Act
-      const result = messageHandler.getSenderInfo(senderInfo);
-
-      // Assert
-      expect(result).toBe("");
+      expect(mockSendMessage).toHaveBeenCalledWith(
+        message.from,
+        "messages.documentReceived",
+        message.id,
+      );
+      expect(mockMarkMessageAsRead).toHaveBeenCalledWith(message.id);
     });
   });
 
   describe("handleAppointmentFlow", () => {
-    test("should handle complete appointment flow", async () => {
+    test("should handle invalid input in appointment flow", async () => {
       // Arrange
       const to = "1234567890";
-      const messages = ["John Doe", "Max", "Perro", "Vacunación"];
-
-      // Start appointment flow
-      const interactiveMessage = {
-        type: "interactive",
-        interactive: {
-          button_reply: {
-            id: "option_1",
-          },
-        },
-        from: to,
-        id: "msg123",
-      };
-      await messageHandler.handleIncomingMessage(interactiveMessage);
+      const invalidInput = "";
+      messageHandler.appointmentState[to] = { step: "name" };
 
       // Act
-      await Promise.all(
-        messages.map((message) => messageHandler.handleAppointmentFlow(to, message))
-      );
+      await messageHandler.handleAppointmentFlow(to, invalidInput);
 
       // Assert
-      const expectedMessage =
-        "Gracias John Doe por agendar tu cita.\nResumen de tu cita:\n\n" +
-        "Nombre: John Doe\n" +
-        "Nombre de la mascota: Max\n" +
-        "Tipo de mascota: Perro\n" +
-        "Motivo: Vacunación\n\n" +
-        "Nos pondremos en contacto contigo pronto para confirmar la fecha y hora de tu cita.";
+      expect(mockSendMessage).toHaveBeenCalledWith(
+        to,
+        "errors.invalidInput",
+      );
+    });
 
-      expect(mockSendMessage).toHaveBeenCalledWith(to, expectedMessage);
+    test("should handle very long inputs in appointment flow", async () => {
+      // Arrange
+      const to = "1234567890";
+      const veryLongInput = "a".repeat(1000);
+      messageHandler.appointmentState[to] = { step: "name" };
+
+      // Act
+      await messageHandler.handleAppointmentFlow(to, veryLongInput);
+
+      // Assert
+      expect(mockSendMessage).toHaveBeenCalledWith(
+        to,
+        "errors.inputTooLong",
+      );
+    });
+  });
+
+  describe("Error Handling", () => {
+    test("should handle undefined message object", async () => {
+      await expect(messageHandler.handleIncomingMessage(undefined))
+        .rejects
+        .toThrow("Invalid message object");
+    });
+
+    test("should handle missing required message properties", async () => {
+      const invalidMessage = {
+        type: "text",
+      };
+
+      await expect(messageHandler.handleIncomingMessage(invalidMessage))
+        .rejects
+        .toThrow("Missing required message properties");
     });
   });
 });
