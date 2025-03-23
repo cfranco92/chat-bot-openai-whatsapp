@@ -106,11 +106,12 @@ export class MessageHandler {
         response = i18next.t("consult.prompt");
         break;
       case "option_6":
-        await this.sendEmergency(to);
+        response = i18next.t("contact.message");
+        await this.sendContact(to);
         return;
       default:
         console.log("Invalid menu option received:", option);
-        await this.sendWelcomeMenu(to, i18next.t("errors.userMenuOption"));
+        // await this.sendWelcomeMenu(to, i18next.t("errors.userMenuOption"));
         break;
     }
 
@@ -129,9 +130,21 @@ export class MessageHandler {
   }
 
   async sendMedia(to) {
-    const mediaUrl = "https://s3.amazonaws.com/gndx.dev/medpet-audio.aac";
-    const caption = i18next.t("media.welcome");
-    const type = "audio";
+    // const mediaUrl = 'https://s3.amazonaws.com/gndx.dev/medpet-audio.aac';
+    // const caption = i18next.t("media.welcome");
+    // const type = 'audio';
+
+    // const mediaUrl = 'https://s3.amazonaws.com/gndx.dev/medpet-imagen.png';
+    // const caption = i18next.t("media.image");
+    // const type = 'image';
+
+    // const mediaUrl = 'https://s3.amazonaws.com/gndx.dev/medpet-video.mp4';
+    // const caption = i18next.t("media.video");
+    // const type = 'video';
+
+    const mediaUrl = "https://s3.amazonaws.com/gndx.dev/medpet-file.pdf";
+    const caption = i18next.t("media.document");
+    const type = "document";
 
     await this.whatsappService.sendMediaMessage({
       to,
@@ -214,11 +227,11 @@ ${i18next.t("appointment.summary.followUp")}`;
     console.log("Starting assistant flow with state:", state);
     let response;
 
-    const menuMessage = "¿La respuesta fue de tu ayuda?";
+    const menuMessage = i18next.t("consult.feedback");
     const buttons = [
-      { id: "option_4", title: "Si, Gracias" },
-      { id: "option_5", title: "Hacer otra pregunta" },
-      { id: "option_6", title: "Emergencia" },
+      { id: "option_4", title: i18next.t("consult.thankYou") },
+      { id: "option_5", title: i18next.t("consult.anotherQuestion") },
+      { id: "option_6", title: i18next.t("consult.emergency") },
     ];
 
     if (state.step === "question") {
@@ -230,9 +243,57 @@ ${i18next.t("appointment.summary.followUp")}`;
     await this.whatsappService.sendInteractiveButton(to, menuMessage, buttons);
   }
 
-  async sendEmergency(to) {
-    const emergencyMessage = i18next.t("emergency.message");
-    await this.whatsappService.sendMessage(to, emergencyMessage);
+  async sendContact(to) {
+    const contactDetails = i18next.t("contact.details", {
+      returnObjects: true,
+    });
+    const contact = {
+      addresses: [
+        {
+          street: contactDetails.street,
+          city: contactDetails.city,
+          state: contactDetails.state,
+          zip: contactDetails.zip,
+          country: contactDetails.country,
+          country_code: "PA",
+          type: "WORK",
+        },
+      ],
+      emails: [
+        {
+          email: contactDetails.email,
+          type: "WORK",
+        },
+      ],
+      name: {
+        formatted_name: contactDetails.name,
+        first_name: contactDetails.company,
+        last_name: contactDetails.department,
+        middle_name: "",
+        suffix: "",
+        prefix: "",
+      },
+      org: {
+        company: contactDetails.company,
+        department: contactDetails.department,
+        title: contactDetails.title,
+      },
+      phones: [
+        {
+          phone: contactDetails.phone,
+          wa_id: "1234567890",
+          type: "WORK",
+        },
+      ],
+      urls: [
+        {
+          url: contactDetails.website,
+          type: "WORK",
+        },
+      ],
+    };
+
+    return this.whatsappService.sendContactMessage(to, contact);
   }
 }
 

@@ -43,6 +43,27 @@ export default {
   },
   consult: {
     prompt: "What would you like to consult about?",
+    feedback: "Was my answer helpful?",
+    thankYou: "Yes, thank you",
+    anotherQuestion: "Ask another question",
+    emergency: "Emergency"
+  },
+  contact: {
+    message: "Here is our contact information for emergencies:",
+    details: {
+      street: "123 Pet Street",
+      city: "City",
+      state: "State",
+      zip: "12345",
+      country: "Country",
+      email: "contact@medpet.com",
+      name: "MedPet Contact",
+      company: "MedPet",
+      department: "Customer Service",
+      title: "Representative",
+      phone: "+1234567890",
+      website: "https://www.medpet.com"
+    }
   },
   greetings: {
     hi: "hi",

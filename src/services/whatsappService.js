@@ -20,6 +20,8 @@ export class WhatsAppService {
       ...(context && { context }),
     };
 
+    console.log("This is the data for the message", data);
+
     return this.sendToWhatsApp(data);
   }
 
@@ -96,6 +98,19 @@ export class WhatsAppService {
       type: "location",
       location,
     };
+
+    return this.sendToWhatsApp(data);
+  }
+
+  async sendContactMessage(to, contact) {
+    const data = {
+      messaging_product: "whatsapp",
+      to,
+      type: "contacts",
+      contacts: [contact],
+    };
+
+    console.log("This is the data", data);
 
     return this.sendToWhatsApp(data);
   }
