@@ -26,10 +26,6 @@ export default {
       followUp: "Nos pondremos en contacto contigo pronto para confirmar la fecha y hora de tu cita."
     }
   },
-  location: {
-    name: "MedPet Veterinaria",
-    address: "Centro Histórico, CDMX",
-  },
   media: {
     welcome: "Bienvenida",
     image: "¡Esto es una Imagen!",
@@ -45,7 +41,11 @@ export default {
     feedback: "¿La respuesta fue de tu ayuda?",
     thankYou: "Sí, gracias",
     anotherQuestion: "Hacer otra pregunta",
-    emergency: "Emergencia"
+    emergency: "Emergencia",
+    emergencyContact: "Aquí está nuestra información de contacto para emergencias:"
+  },
+  location: {
+    message: "Te esperamos en nuestra ubicación"
   },
   greetings: {
     hi: "hola",

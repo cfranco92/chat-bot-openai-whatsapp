@@ -96,20 +96,20 @@ export class MessageHandler {
         response = i18next.t("consult.prompt");
         break;
       case "option_3":
+        response = i18next.t("location.message");
         await this.sendLocation(to);
-        return;
+        break;
       case "option_4":
         await this.sendWelcomeMenu(to);
-        return;
+        break;
       case "option_5":
         this.assistantState[to] = { step: "question" };
         response = i18next.t("consult.prompt");
         break;
       case "option_6":
-        response =
-          "Aquí está nuestra información de contacto para emergencias:";
+        response = i18next.t("consult.emergencyContact");
         await this.sendContact(to);
-        return;
+        break;
       default:
         console.log("Invalid menu option received:", option);
         await this.sendWelcomeMenu(to, i18next.t("errors.userMenuOption"));
@@ -119,17 +119,6 @@ export class MessageHandler {
     if (response) {
       await this.whatsappService.sendMessage(to, response);
     }
-  }
-
-  async sendLocation(to) {
-    const location = {
-      latitude: 19.4326,
-      longitude: -99.1332,
-      name: i18next.t("location.name"),
-      address: i18next.t("location.address"),
-    };
-
-    await this.whatsappService.sendLocation(to, location);
   }
 
   async sendMedia(to) {
@@ -301,6 +290,19 @@ ${i18next.t("appointment.summary.followUp")}`;
     };
 
     await this.whatsappService.sendContactMessage(to, contact);
+  }
+
+  async sendLocation(to) {
+    const { LOCATION } = config;
+
+    const location = {
+      latitude: LOCATION.latitude,
+      longitude: LOCATION.longitude,
+      name: LOCATION.name,
+      address: LOCATION.address,
+    };
+
+    return this.whatsappService.sendLocation(to, location);
   }
 }
 

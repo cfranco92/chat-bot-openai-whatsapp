@@ -11,6 +11,15 @@ try {
   console.error("Error parsing CONTACT environment variable:", error);
 }
 
+let locationInfo = {};
+try {
+  if (process.env.LOCATION) {
+    locationInfo = JSON.parse(process.env.LOCATION);
+  }
+} catch (error) {
+  console.error("Error parsing LOCATION environment variable:", error);
+}
+
 export default {
   WEBHOOK_VERIFY_TOKEN: process.env.WEBHOOK_VERIFY_TOKEN,
   API_TOKEN: process.env.API_TOKEN,
@@ -25,4 +34,5 @@ export default {
   OPENAI_MODEL: process.env.OPENAI_MODEL,
   ROLE_PROMPT: process.env.ROLE_PROMPT,
   CONTACT: contactInfo,
+  LOCATION: locationInfo,
 };

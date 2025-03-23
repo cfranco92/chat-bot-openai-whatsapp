@@ -27,10 +27,6 @@ export default {
       followUp: "We will contact you soon to confirm the date and time of your appointment."
     }
   },
-  location: {
-    name: "MedPet Veterinary",
-    address: "Historic Center, Mexico City",
-  },
   media: {
     welcome: "Welcome",
     image: "This is an Image!",
@@ -46,7 +42,11 @@ export default {
     feedback: "Was my answer helpful?",
     thankYou: "Yes, thank you",
     anotherQuestion: "Ask another question",
-    emergency: "Emergency"
+    emergency: "Emergency",
+    emergencyContact: "Here is our contact information for emergencies:"
+  },
+  location: {
+    message: "We are waiting for you at our location"
   },
   greetings: {
     hi: "hi",

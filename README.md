@@ -50,8 +50,11 @@ OPENAI_API_KEY=your_openai_api_key
 OPENAI_MODEL=gpt-4
 ROLE_PROMPT=your_system_prompt
 SPREAD_SHEET_ID=your_sheet_id
-CONTACT=emergency_contact_info
+CONTACT={"formatted_name":"Your Clinic","phone_number":"1234567890"}
+LOCATION={"latitude":19.4326,"longitude":-99.1332,"name":"MedPet Veterinary Clinic","address":"Historic Center, Mexico City"}
 ```
+
+Note that `CONTACT` and `LOCATION` are JSON-formatted strings containing contact and location information respectively.
 
 ## Usage
 
@@ -107,6 +110,39 @@ src/
 │   └── httpRequest/            # API communication
 └── app.js               # Application entry point
 ```
+
+## Environment Configuration
+
+The application uses environment variables for most of its configuration, making it easy to adapt to different environments without code changes.
+
+### Multilingual Support
+
+The application supports multiple languages by setting the `LANGUAGE` environment variable to `"es"` for Spanish or `"en"` for English. This affects all text messages sent to users.
+
+Location information is managed directly through the `LOCATION` environment variable and is not subject to translation:
+
+```env
+LOCATION={"latitude":19.4326,"longitude":-99.1332,"name":"MedPet Veterinary Clinic","address":"Historic Center, Mexico City"}
+```
+
+To provide a localized experience, you should set the `name` and `address` fields in the `LOCATION` variable to match your primary audience language.
+
+### Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| `WEBHOOK_VERIFY_TOKEN` | Token for verifying webhook calls from Meta |
+| `API_TOKEN` | Your Meta API token |
+| `BUSINESS_PHONE` | WhatsApp Business phone ID |
+| `API_VERSION` | Meta API version (e.g., v22.0) |
+| `BUSINESS_NAME` | Your business name |
+| `LANGUAGE` | Default language (en/es) |
+| `OPENAI_API_KEY` | API key for OpenAI integration |
+| `OPENAI_MODEL` | OpenAI model to use (e.g., gpt-4) |
+| `ROLE_PROMPT` | System prompt for the AI assistant |
+| `SPREAD_SHEET_ID` | Google Sheet ID for appointment storage |
+| `CONTACT` | JSON with contact information |
+| `LOCATION` | JSON with location information (coordinates, name and address) |
 
 ## API Endpoints
 
@@ -190,4 +226,4 @@ This project is licensed under the ISC License.
 - Jest for testing
 - ESLint for code quality
 - OpenAI for AI integration
-- Google Sheets API for data storage 
+- Google Sheets API for data storage
