@@ -112,11 +112,13 @@ export class MessageHandler {
         return;
       default:
         console.log("Invalid menu option received:", option);
-        // await this.sendWelcomeMenu(to, i18next.t("errors.userMenuOption"));
+        await this.sendWelcomeMenu(to, i18next.t("errors.userMenuOption"));
         break;
     }
 
-    await this.whatsappService.sendMessage(to, response);
+    if (response) {
+      await this.whatsappService.sendMessage(to, response);
+    }
   }
 
   async sendLocation(to) {
@@ -245,47 +247,54 @@ ${i18next.t("appointment.summary.followUp")}`;
   }
 
   async sendContact(to) {
+    const contactInfo = config.CONTACT;
+
+    if (!contactInfo) {
+      console.error("No contact info found");
+      return;
+    }
+
     const contact = {
       addresses: [
         {
-          street: "123 Calle de las Mascotas",
-          city: "Ciudad",
-          state: "Estado",
-          zip: "12345",
-          country: "País",
-          country_code: "PA",
+          street: contactInfo.street,
+          city: contactInfo.city,
+          state: contactInfo.state,
+          zip: contactInfo.zip,
+          country: contactInfo.country,
+          country_code: contactInfo.country_code,
           type: "WORK",
         },
       ],
       emails: [
         {
-          email: "contacto@medpet.com",
+          email: contactInfo.email,
           type: "WORK",
         },
       ],
       name: {
-        formatted_name: "MedPet Contacto",
-        first_name: "MedPet",
-        last_name: "Contacto",
+        formatted_name: contactInfo.name,
+        first_name: contactInfo.company,
+        last_name: contactInfo.department,
         middle_name: "",
         suffix: "",
         prefix: "",
       },
       org: {
-        company: "MedPet",
-        department: "Atención al Cliente",
-        title: "Representante",
+        company: contactInfo.company,
+        department: contactInfo.department,
+        title: contactInfo.title,
       },
       phones: [
         {
-          phone: "+1234567890",
-          wa_id: "1234567890",
+          phone: contactInfo.phone,
+          wa_id: contactInfo.wa_id,
           type: "WORK",
         },
       ],
       urls: [
         {
-          url: "https://www.medpet.com",
+          url: contactInfo.website,
           type: "WORK",
         },
       ],

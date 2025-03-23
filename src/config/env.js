@@ -2,6 +2,15 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+let contactInfo = {};
+try {
+  if (process.env.CONTACT) {
+    contactInfo = JSON.parse(process.env.CONTACT);
+  }
+} catch (error) {
+  console.error("Error parsing CONTACT environment variable:", error);
+}
+
 export default {
   WEBHOOK_VERIFY_TOKEN: process.env.WEBHOOK_VERIFY_TOKEN,
   API_TOKEN: process.env.API_TOKEN,
@@ -15,4 +24,5 @@ export default {
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   OPENAI_MODEL: process.env.OPENAI_MODEL,
   ROLE_PROMPT: process.env.ROLE_PROMPT,
+  CONTACT: contactInfo,
 };
