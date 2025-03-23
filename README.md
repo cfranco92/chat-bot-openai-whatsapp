@@ -1,10 +1,11 @@
-# WhatsApp API - Business Chatbot
+# Chat Bot OpenAI WhatsApp
 
-A flexible WhatsApp bot using the official WhatsApp Business API. The bot can be configured for various business purposes through environment variables, supporting different conversation flows and roles. Currently configured for appointment scheduling with multi-language support.
+A flexible WhatsApp bot using the official WhatsApp Business API and OpenAI integration. The bot can be configured for various business purposes through environment variables, supporting different conversation flows and roles. Currently configured for appointment scheduling with multi-language support.
 
 ## 🚀 Features
 
 - WhatsApp webhook for receiving and processing messages
+- OpenAI integration for intelligent responses
 - Configurable conversation flows through environment variables
 - Multi-language support (English and Spanish)
 - Support for different message types:
@@ -22,6 +23,7 @@ A flexible WhatsApp bot using the official WhatsApp Business API. The bot can be
 - Node.js (v14 or higher)
 - NPM (v6 or higher)
 - WhatsApp Business API account
+- OpenAI API key
 - Google Sheets API credentials
 - Configured environment variables
 
@@ -29,8 +31,8 @@ A flexible WhatsApp bot using the official WhatsApp Business API. The bot can be
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/whatsapp-api.git
-cd whatsapp-api
+git clone https://github.com/your-username/chat-bot-openai-whatsapp.git
+cd chat-bot-openai-whatsapp
 ```
 
 2. Install dependencies:
@@ -51,6 +53,7 @@ LANGUAGE=en                           # Language setting (en/es)
 SPREAD_SHEET_ID=your_spreadsheet_id   # Google Sheets ID for data storage
 BUSINESS_NAME=Your Business Name      # Name of your business
 BUSINESS_ROLE=Your Business Role      # Role/purpose of your business
+OPENAI_API_KEY=your_openai_api_key   # Your OpenAI API key
 ```
 
 4. Set up Google Sheets:
@@ -145,6 +148,7 @@ src/
 - i18next - Internationalization
 - Google Sheets API - Data storage
 - WhatsApp Business API - Messaging platform
+- OpenAI API - AI-powered responses
 
 ## 🤝 Contributing
 
@@ -162,6 +166,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 - WhatsApp Business API Team
 - Google Sheets API Team
+- OpenAI Team
 - Project contributors
 - Developer community
 
@@ -173,3 +178,4 @@ If you have any questions or issues:
 - Send an email to [your-email@example.com]
 - Check the [official WhatsApp Business API documentation](https://developers.facebook.com/docs/whatsapp)
 - Check the [official Google Sheets API documentation](https://developers.google.com/sheets/api)
+- Check the [official OpenAI API documentation](https://platform.openai.com/docs/api-reference)
