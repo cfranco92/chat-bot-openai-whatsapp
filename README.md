@@ -6,7 +6,7 @@ A WhatsApp bot for managing veterinary appointments using the official WhatsApp 
 
 - WhatsApp webhook for receiving and processing messages
 - Appointment management system with conversational flow
-- Multi-language support (currently Spanish)
+- Multi-language support (English and Spanish)
 - Support for different message types:
   - Text
   - Images
@@ -15,12 +15,14 @@ A WhatsApp bot for managing veterinary appointments using the official WhatsApp 
   - Contacts
 - Robust error handling system
 - Comprehensive unit and integration tests
+- Google Sheets integration for appointment storage
 
 ## 📋 Prerequisites
 
 - Node.js (v14 or higher)
 - NPM (v6 or higher)
 - WhatsApp Business API account
+- Google Sheets API credentials
 - Configured environment variables
 
 ## 🔧 Installation
@@ -45,8 +47,15 @@ Edit the `.env` file with your credentials:
 ```env
 WHATSAPP_TOKEN=your_whatsapp_token    # Your WhatsApp Business API token
 VERIFY_TOKEN=your_verification_token   # Your webhook verification token
-LANGUAGE=es                           # Language setting (es/en)
+LANGUAGE=en                           # Language setting (en/es)
+SPREAD_SHEET_ID=your_spreadsheet_id   # Google Sheets ID for appointments
 ```
+
+4. Set up Google Sheets:
+- Create a new Google Sheet
+- Share it with the service account email
+- Copy the spreadsheet ID to your .env file
+- Place your Google Sheets credentials in `src/credentials/credentials.json`
 
 ## 🚀 Usage
 
@@ -63,6 +72,7 @@ npm start
 3. Receive messages:
 - Incoming messages will be processed automatically
 - The bot will respond according to the configured conversation flow
+- Appointments will be stored in Google Sheets
 
 ## 💬 Appointment Flow
 
@@ -73,11 +83,11 @@ The bot handles the following flow for scheduling appointments:
 3. Request pet's name
 4. Request pet type
 5. Request appointment reason
-6. Appointment confirmation
+6. Appointment confirmation and storage in Google Sheets
 
 ## 🧪 Testing
 
-The project includes unit and integration tests:
+The project includes comprehensive unit and integration tests:
 
 ```bash
 # Run all tests
@@ -94,8 +104,10 @@ npm run lint
 
 - Unit tests for `MessageHandler`
 - Unit tests for `WhatsAppService`
+- Unit tests for `GoogleSheetsService`
 - Integration tests for webhook
 - Integration tests for service flow
+- Integration tests for appointment management
 
 ## 📦 Project Structure
 
@@ -107,7 +119,13 @@ src/
 │   └── webhookRoutes.js
 ├── services/
 │   ├── messageHandler.js
-│   └── whatsappService.js
+│   ├── whatsappService.js
+│   └── googleSheetsService.js
+├── i18n/
+│   ├── locales/
+│   │   ├── en.js
+│   │   └── es.js
+│   └── index.js
 └── __tests__/
     ├── integration/
     │   ├── services.test.js
@@ -124,6 +142,9 @@ src/
 - ESLint - Linter
 - Supertest - API testing
 - dotenv - Environment variables management
+- i18next - Internationalization
+- Google Sheets API - Appointment storage
+- WhatsApp Business API - Messaging platform
 
 ## 🤝 Contributing
 
@@ -140,6 +161,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## ✨ Acknowledgments
 
 - WhatsApp Business API Team
+- Google Sheets API Team
 - Project contributors
 - Developer community
 
@@ -150,3 +172,4 @@ If you have any questions or issues:
 - Open an issue on GitHub
 - Send an email to [your-email@example.com]
 - Check the [official WhatsApp Business API documentation](https://developers.facebook.com/docs/whatsapp)
+- Check the [official Google Sheets API documentation](https://developers.google.com/sheets/api)

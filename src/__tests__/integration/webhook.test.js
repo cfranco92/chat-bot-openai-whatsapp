@@ -31,18 +31,18 @@ const { default: webhookRouter } = await import("../../routes/webhookRoutes.js")
 let app;
 
 beforeEach(() => {
-  // Configurar variables de entorno
+  // Set up environment variables for testing
   process.env.WEBHOOK_VERIFY_TOKEN = "test_token";
   app = express();
   app.use(express.json());
   app.use(webhookRouter);
-  // Clear all mocks
+  // Reset all mocks before each test
   jest.clearAllMocks();
 });
 
 describe("Webhook Integration Tests", () => {
   describe("GET /webhook", () => {
-    it("should verify webhook subscription", async () => {
+    it("should verify webhook subscription with valid token", async () => {
       process.env.VERIFY_TOKEN = "test_token";
 
       const response = await request(app)
@@ -58,7 +58,7 @@ describe("Webhook Integration Tests", () => {
       expect(mockWebhookController.verifyWebhook).toHaveBeenCalled();
     });
 
-    it("should reject invalid verify token", async () => {
+    it("should reject webhook verification with invalid token", async () => {
       process.env.VERIFY_TOKEN = "test_token";
 
       const response = await request(app)
@@ -75,7 +75,7 @@ describe("Webhook Integration Tests", () => {
   });
 
   describe("POST /webhook", () => {
-    it("should handle incoming messages", async () => {
+    it("should process incoming text messages successfully", async () => {
       const mockMessage = {
         object: "whatsapp_business_account",
         entry: [{
@@ -99,7 +99,7 @@ describe("Webhook Integration Tests", () => {
       expect(mockWebhookController.handleIncoming).toHaveBeenCalled();
     });
 
-    it("should handle invalid webhook data", async () => {
+    it("should handle invalid webhook payload", async () => {
       const response = await request(app)
         .post("/webhook")
         .send({});
@@ -108,7 +108,7 @@ describe("Webhook Integration Tests", () => {
       expect(mockWebhookController.handleIncoming).toHaveBeenCalled();
     });
 
-    test("should handle status updates", async () => {
+    test("should process message status updates", async () => {
       const webhookData = {
         object: "whatsapp_business_account",
         entry: [{

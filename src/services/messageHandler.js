@@ -18,7 +18,7 @@ export class MessageHandler {
   }
 
   async handleIncomingMessage(message, senderInfo) {
-    // Validar mensaje
+    // Validate message
     if (!message) {
       throw new Error("Invalid message object");
     }
@@ -176,6 +176,7 @@ export class MessageHandler {
   }
 
   async sendMedia(to) {
+    // Example media URLs for different types of content
     // const mediaUrl = 'https://s3.amazonaws.com/gndx.dev/medpet-audio.aac';
     // const caption = i18next.t("media.welcome");
     // const type = 'audio';
@@ -188,6 +189,7 @@ export class MessageHandler {
     // const caption = i18next.t("media.video");
     // const type = 'video';
 
+    // Currently using document type as default
     const mediaUrl = "https://s3.amazonaws.com/gndx.dev/medpet-file.pdf";
     const caption = i18next.t("media.document");
     const type = "document";
@@ -229,6 +231,7 @@ ${i18next.t("appointment.summary.followUp")}`;
 
   async handleAppointmentFlow(to, message) {
     const state = this.appointmentState[to];
+    // Log the current state for debugging purposes
     console.log("Starting appointment flow with state:", state);
 
     if (!state) {
@@ -240,6 +243,7 @@ ${i18next.t("appointment.summary.followUp")}`;
       return;
     }
 
+    // Validate message input
     if (!message || message.trim() === "") {
       await this.whatsappService.sendMessage(
         to,
@@ -248,6 +252,7 @@ ${i18next.t("appointment.summary.followUp")}`;
       return;
     }
 
+    // Check message length limit
     if (message.length > 100) {
       await this.whatsappService.sendMessage(
         to,
@@ -258,6 +263,7 @@ ${i18next.t("appointment.summary.followUp")}`;
 
     let response;
     try {
+      // Handle different steps in the appointment flow
       switch (state.step) {
         case "name":
           state.name = message;
@@ -284,9 +290,11 @@ ${i18next.t("appointment.summary.followUp")}`;
           throw new Error("Invalid appointment state");
       }
 
+      // Log updated state for debugging
       console.log("Updated state:", this.appointmentState[to]);
       await this.whatsappService.sendMessage(to, response);
     } catch (error) {
+      // Handle any errors during the appointment flow
       console.error("Error in appointment flow:", error);
       await this.whatsappService.sendMessage(
         to,
